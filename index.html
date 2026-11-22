@@ -362,16 +362,18 @@ button.chip:hover{border-color:var(--red)}
 .cert-title{font-size:clamp(1.4rem,min(4.4vw,6vh),2.6rem);margin:4px 0}
 .cert-line{font-size:.95rem;margin:0}
 .cert-name{font-size:clamp(1.6rem,min(5vw,6.4vh),2.8rem);margin:4px 0}
-.cert-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:center;margin-top:10px;text-align:left}
+.cert-body{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(24px,3vw,40px);align-items:center;margin-top:10px;text-align:left}
 .cert-body .cert-score{margin:0;justify-content:flex-start;gap:14px;flex-wrap:nowrap}
 .cert-pair{display:flex;align-items:flex-end}
 .cert-honey{width:clamp(110px,13vw,160px);height:min(230px,32vh)}
 .cert-saba{width:clamp(40px,4.6vw,58px);margin-left:-16px;margin-bottom:-2px}
 .cert-saba svg{width:100%;height:auto;display:block}
 .seal{width:min(120px,17vh);height:min(120px,17vh);font-size:min(2rem,4.6vh)}
-.cert-rank .rank{font-size:clamp(1rem,2.2vw,1.35rem)}
+.cert-rank{min-width:0}
+.cert-rank .rank{font-size:clamp(.95rem,1.8vw,1.25rem);line-height:1.15;overflow-wrap:anywhere}
 .breakdown{margin:0;font-size:.88rem}
 .breakdown td{padding:4px 6px}
+.cert-quote .sig{white-space:nowrap}
 .cert-quote{font-family:var(--hand);font-size:clamp(1.1rem,2.6vh,1.4rem);margin-top:8px;text-align:center}
 .end-actions{margin:12px 0 0}
 .end-actions .btn{min-height:40px;padding-top:8px;padding-bottom:8px}
@@ -2042,7 +2044,7 @@ function showEnd() {
   setScreen('<div class="certificate paper"><div class="cert-k">Human Worlds · Expedition Report</div><h2 class="cert-title">Certificate of Excavation</h2>' +
     '<p class="cert-line">This certifies that</p><div class="cert-name">' + esc(state.name || 'Field Archaeologist') + '</div><p class="cert-line">completed Prof Honey’s expedition to the lost hominins of Africa, Europe and Asia.</p>' +
     '<div class="cert-body"><div class="cert-score"><div class="cert-pair"><div class="cert-honey" id="certHoney"></div><div class="cert-saba" title="Saba, Prof Honey’s cat">' + Saba.svg() + '</div></div><div class="seal"><div>' + pct + '%<small>SCORE</small></div></div><div class="cert-rank"><div class="rank">' + rank[1] + '</div><div>' + pts + ' of ' + MAX_POINTS + ' points</div><div style="font-family:var(--type);font-size:.85rem">' + date + '</div></div></div>' +
-    '<div><table class="breakdown">' + rows + '</table><p class="cert-quote">“' + esc(rank[2]) + '” — Prof Honey (and Saba)</p></div></div></div>' +
+    '<div><table class="breakdown">' + rows + '</table><p class="cert-quote">“' + esc(rank[2]) + '” <span class="sig">— Prof Honey (and Saba)</span></p></div></div></div>' +
     '<div class="end-actions"><button class="btn alt" id="printBtn">Print or save report</button><button class="btn ghost" id="discBtn">Class discussion questions</button><button class="btn ghost" id="jBtn">Field Journal</button><button class="btn ghost" id="againBtn">Play again</button></div>');
   Honey.mount($('#certHoney'), {pose:'tip', mouth:'grin', dur:2});
   if (pct >= 60) setTimeout(sfx.fanfare, 300);
