@@ -1578,7 +1578,7 @@ function askSite(s) {
     (s.q.almanac ? '<div class="q-row"><button class="chip" id="almBtn">' + ICON.clock.replace('<svg', '<svg width="16" height="16"') + ' Consult the Almanac</button></div>' : '') + '<div id="qBox"></div>';
   if ($('#almBtn')) $('#almBtn').onclick = () => openAlmanac(s.ageK, s.name);
   mcq({container: $('#qBox'), q: s.q, item: s.id,
-    onWrong: () => { Honey.mount($('#digHoney'), {pose:'point', mouth:'smirk', dur:.75}); bubble($('#digBubble'), s.q.almanac ? 'Close! Check the dates in the Almanac, then try again.' : 'Close! Reread the field note: what does the evidence actually show?'); },
+    onWrong: () => { Honey.mount($('#digHoney'), {pose:'oops', mouth:'o', brow:'up', dur:.75}); bubble($('#digBubble'), s.q.almanac ? 'Close! Check the dates in the Almanac, then try again.' : 'Close! Reread the field note: what does the evidence actually show?'); },
     onDone: pts => siteDone(s, pts)});
 }
 function siteDone(s, pts) {
@@ -1644,7 +1644,7 @@ function dnaLab(s) {
       dnaDone(s, pts);
     } else {
       tries++; sfx.wrong(); fx.quake();
-      Honey.mount($('#digHoney'), {pose:'point', mouth:'smirk', dur:.75});
+      Honey.mount($('#digHoney'), {pose:'oops', mouth:'o', brow:'up', dur:.75});
       if (tries >= 2) { award('denny-dna', 0); dnaDone(s, 0); }
       else { $('#dnaFb').className = 'feedback bad'; $('#dnaFb').textContent = 'The bands don’t line up. Try again for half points.'; bubble($('#digBubble'), 'Steady hands! Each parent’s bands should match one reference lane exactly.'); }
     }
@@ -1657,7 +1657,7 @@ function dnaDone(s, pts) {
     '<div class="q-done"><span class="qd-a">✓ Mother: Neanderthal · Father: Denisovan</span><span class="qd-q">Direct evidence of an encounter between two kinds of humans.</span></div><div id="qBox"></div>';
   bubble($('#digBubble'), 'A Neanderthal mother and a Denisovan father! Now — the professor’s favorite question: what DOESN’T the DNA tell us?');
   mcq({container: $('#qBox'), q: s.q, item: s.id,
-    onWrong: () => { Honey.mount($('#digHoney'), {pose:'point', mouth:'smirk', dur:.75}); bubble($('#digBubble'), 'The DNA already answered that. What would you need a time machine to know?'); },
+    onWrong: () => { Honey.mount($('#digHoney'), {pose:'oops', mouth:'o', brow:'up', dur:.75}); bubble($('#digBubble'), 'The DNA already answered that. What would you need a time machine to know?'); },
     onDone: p => siteDone(s, p)});
 }
 
@@ -1683,7 +1683,7 @@ function showMapRoom() {
       mapRoomRoutes(pts);
     } else {
       tries++; b.classList.add('wrong'); b.disabled = true; sfx.wrong(); fx.quake();
-      Honey.mount($('#mrHoney'), {pose:'point', mouth:'smirk', dur:.75});
+      Honey.mount($('#mrHoney'), {pose:'oops', mouth:'o', brow:'up', dur:.75});
       if (tries >= 2) { over = true; card.querySelector('.opt[data-site="dmanisi"]').classList.add('right'); $$('.opt', card).forEach(o => o.disabled = true); award('maproom-1', 0); setTimeout(() => mapRoomRoutes(0), 900); }
       else { $('#mrFb').className = 'feedback bad'; $('#mrFb').textContent = 'That one’s in Africa or far too young. Look for a site outside Africa that’s about 1.85 million years old.'; bubble($('#mrBubble'), 'Check the continent AND the date!'); }
     }
@@ -1701,7 +1701,7 @@ function mapRoomRoutes(pts1) {
   const card = $('#mrCard');
   card.innerHTML = '<div class="label">Question 2 of 2 <span>Question 1: ' + (pts1 === 10 ? '+10 points' : pts1 ? '+5 points' : '0 points') + '</span></div><div id="mrQ2"></div>';
   mcq({container: $('#mrQ2'), q: MAPROOM.q2, item: 'maproom-2',
-    onWrong: () => { Honey.mount($('#mrHoney'), {pose:'point', mouth:'smirk', dur:.75}); bubble($('#mrBubble'), 'The pins prove those things. What about the empty space between them?'); },
+    onWrong: () => { Honey.mount($('#mrHoney'), {pose:'oops', mouth:'o', brow:'up', dur:.75}); bubble($('#mrBubble'), 'The pins prove those things. What about the empty space between them?'); },
     onDone: pts => {
       completeStep();
       Honey.mount($('#mrHoney'), {pose: pts ? 'tip' : 'idle', mouth: pts ? 'grin' : 'smirk', dur:1});
@@ -1756,7 +1756,7 @@ function showTimeline() {
     const all = ok === 5;
     if (all) sfx.correct(); else { sfx.wrong(); fx.quake(); }
     setTimeout(() => { $('#temple').classList.add('open'); sfx.stamp(); }, all ? 400 : 1400);
-    Honey.mount($('#tlHoney'), all ? {pose:'tip', mouth:'grin', dur:1} : {pose:'point', mouth:'smirk', dur:1});
+    Honey.mount($('#tlHoney'), all ? {pose:'tip', mouth:'grin', dur:1} : {pose:'oops', mouth:'o', brow:'up', dur:1});
     bubble($('#tlBubble'), all ? 'Perfect order — the door is opening! You know your deep time.' : ok + ' of 5 in the right place. The door grinds open anyway… but study the correct order below!');
     completeStep();
     $('#tlResult').innerHTML = '<div class="fieldcard paper tl-result"><div class="result' + (all ? '' : ok ? ' half' : ' zero') + '">+' + pts + ' points · ' + ok + ' of 5 placed correctly</div>' +
@@ -1783,7 +1783,7 @@ function showEvidence() {
       award('em-' + i, right ? 5 : 0);
       $$('#emCard [data-v]').forEach(x => x.disabled = true); b.classList.add(right ? 'picked-right' : 'picked-wrong');
       if (right) { sfx.correct(); Honey.mount($('#emHoney'), {pose:'tip', mouth:'grin', dur:.8}); }
-      else { sfx.wrong(); fx.quake(); Honey.mount($('#emHoney'), {pose:'point', mouth:'smirk', dur:.8}); }
+      else { sfx.wrong(); fx.quake(); Honey.mount($('#emHoney'), {pose:'oops', mouth:'o', brow:'up', dur:.8}); }
       $('#emFb').innerHTML = '<p><b>' + (right ? 'Correct! +5' : 'Not quite.') + '</b> ' + (e.e ? 'The evidence shows it. ' : 'It’s still an open question. ') + esc(e.why) + '</p><div class="card-actions" style="justify-content:center"><button class="btn small" id="emNext">' + (i + 1 < EVIDENCE.length ? 'Next statement' : 'Finish the trial') + '</button></div>';
       say((right ? 'Correct. ' : 'Not quite. ') + e.why);
       $('#emNext').onclick = () => { i++; card(); };
