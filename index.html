@@ -895,7 +895,7 @@ const Honey = (() => {
     container.classList.add('ph');
     container.classList.remove('ph-drawing', 'ph-done');
     const token = (container._phTok = (container._phTok || 0) + 1);
-    if (opts.instant) { container.classList.add('ph-done'); return; }
+    if (opts.instant || !opts.draw) { container.classList.add('ph-done'); return; } // pencil draw-in only when asked (home page, chapter cards)
     const clipL = container.querySelector('.ph-clip-l'), clipF = container.querySelector('.ph-clip-f'), pen = container.querySelector('.ph-pencil');
     const dur = (opts.dur || 2.2) * (reduce ? 0.35 : 1) * 1000;
     const TOP = 34, BOTTOM = 404;
@@ -1279,7 +1279,7 @@ function showTitle() {
     '<div id="confirmBox"></div>' +
     '<ul class="howto"><li><b>Dig</b> Drag across the dirt to brush it away.</li><li><b>Read the evidence</b> First-try answers earn full points.</li><li><b>Use your tools</b> The Almanac and Field Journal are in your pack.</li></ul>' +
     '</div><div class="title-honey" id="titleHoney"></div></div>' + HORIZON + '<button class="linkbtn credits-link" id="creditsBtn">Sources &amp; image credits</button></section>');
-  Honey.mount($('#titleHoney'), {pose:'tip', mouth:'smirk', dur:2.6});
+  Honey.mount($('#titleHoney'), {pose:'tip', mouth:'smirk', dur:2.6, draw:true});
   const nm = $('#playerName'); nm.addEventListener('input', () => { state.name = nm.value.trim(); save(); });
   const begin = () => { state.name = nm.value.trim(); save(); sfx.fanfare(); showTop(true); go(); };
   if ($('#startBtn')) $('#startBtn').onclick = begin;
@@ -1301,7 +1301,7 @@ function showChapter(ci) {
   setScreen('<section class="chapter-screen"><div class="chapter-card ch-anim"><div class="ch-num">Chapter ' + ch.num + '</div><h2 class="ch-title">' + ch.title + '</h2><div class="ch-sub">' + ch.sub + '</div>' +
     '<div class="ch-body"><div class="ch-honey" id="chHoney"></div><div class="bubble" id="chBubble"></div></div>' +
     '<button class="btn" id="chGo">' + label + '</button></div></section>');
-  Honey.mount($('#chHoney'), {pose: ci === 4 ? 'point' : 'idle', dur:1.8});
+  Honey.mount($('#chHoney'), {pose: ci === 4 ? 'point' : 'idle', dur:1.8, draw:true});
   bubble($('#chBubble'), esc(ch.intro));
   sfx.page();
   $('#chGo').onclick = () => { completeStep(); go(); };
