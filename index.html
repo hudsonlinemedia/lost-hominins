@@ -795,12 +795,13 @@ const Honey = (() => {
       {d:pathX('M 46 324 C 46 292 50 262 54 236 L 76 240 C 74 264 72 294 72 324 C 64 330 52 330 46 324 Z'), f:JACKET, w:2.3}
     ];
     // index (thumb side, outer) → pinky (inner); similar lengths so no finger stands out
-    const fingers = [[54.5, 209, 19, -15], [60.2, 207, 20.5, -5], [66, 207.5, 20, 5], [71.5, 210, 17, 16]];
+    // palm faces the viewer, so the thumb points in toward her head; pinky on the outer side
+    const fingers = [[54.5, 210, 17, -16], [60.2, 207.5, 20, -5], [66, 207, 20.5, 5], [71.5, 209, 19, 15]];
     const hand = [
-      {d:capsule(X(51), 229, 16, 7, A(-48)), f:PALM, w:1.8},
+      {d:capsule(X(75), 229, 16, 7, A(48)), f:PALM, w:1.8},
       ...fingers.map(([x, y, len, ang]) => ({d:capsule(X(x), y, len, 6.4, A(ang)), f:PALM, w:1.7})),
       {d:pathX('M 50 213 C 50 207 55 204 63 204 C 71 204 76 207 76 213 L 76 232 C 76 240 70 244 63 244 C 56 244 50 240 50 232 Z'), f:PALM, w:2},
-      {d:pathX('M 55 221 C 59 224 66 224 71 219 M 56 230 C 60 228 66 228 70 231'), w:1, s:PALM_LINE, nl:1}
+      {d:pathX('M 71 221 C 67 224 60 224 55 219 M 70 230 C 66 228 60 228 56 231'), w:1, s:PALM_LINE, nl:1}
     ];
     const cuff = [{d:pathX('M 53 236 L 77 238 L 76 251 L 52 249 Z'), f:JACKET_D, w:1.9}];
     return [...sleeve, ...hand, ...cuff];
