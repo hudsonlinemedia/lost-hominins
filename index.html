@@ -55,6 +55,7 @@ main:focus{outline:none}
 .logo-and{display:block;font-family:var(--hand);text-transform:none;font-size:clamp(1.1rem,min(3.6vw,5vh),2.6rem);color:#ffe2a8;margin:.02em 0 -.05em .2em;text-shadow:2px 2px 0 #3a1408}
 .logo-main{display:block;font-size:clamp(2rem,min(8vw,11.2vh),6.4rem);color:var(--gold2);letter-spacing:.01em;-webkit-text-stroke:1.5px #2a0f05;text-shadow:1px 1px 0 #2a0f05,2px 2px 0 #2a0f05,3px 3px 0 #2a0f05,4px 4px 0 #2a0f05,5px 5px 0 #2a0f05,6px 6px 0 #2a0f05,8px 10px 18px rgba(0,0,0,.55)}
 .tagline{max-width:36em;font-size:clamp(.9rem,min(1.6vw,2.5vh),1.18rem);line-height:1.4;color:#fff1d6;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.tagline .tag2{display:block}
 .start-row{display:flex;align-items:flex-end;gap:10px 12px;flex-wrap:wrap;margin:clamp(8px,2.2vh,20px) 0 0}
 .namefield{display:grid;gap:4px;font-family:var(--type);font-size:clamp(.72rem,1.7vh,.85rem);color:#ffe2a8;flex:1 1 220px;max-width:340px}
 .namefield input{font:1rem var(--body);padding:clamp(7px,1.3vh,10px) 12px;border-radius:8px;border:2px solid var(--ink);background:#fff8e8;color:var(--ink)}
@@ -165,7 +166,7 @@ button.chip:hover{border-color:var(--red)}
 .result.half{background:#fbeccb;border-color:#b07a14;color:#5a3b05}
 .result.zero{background:#efe2cf;border-color:#7a5634;color:#4a3420}
 .why{margin:6px 0 12px}
-.atlas{background:#fff8e8;border:1.5px dashed #7a5634;border-radius:8px;padding:10px 12px;margin:10px 0;font-size:.93rem}
+.atlas{color:var(--ink);background:#fff8e8;border:1.5px dashed #7a5634;border-radius:8px;padding:10px 12px;margin:10px 0;font-size:.93rem}
 .atlas b{font-family:var(--type);font-weight:400;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:#7a2a16;display:block}
 .atlas .age{font-style:italic;color:#5a4430;font-size:.85rem}
 .photo{background:#fffdf6;padding:8px 8px 6px;box-shadow:0 5px 12px rgba(0,0,0,.35);transform:rotate(-1.4deg);position:relative;margin:8px 6px 16px}
@@ -273,6 +274,37 @@ button.chip:hover{border-color:var(--red)}
 .almanac p{font-size:.85rem;color:#5a4430;margin-top:8px}
 .credits li{margin:6px 0;font-size:.9rem}
 
+
+/* answer screen: find + images on the left, info on the right */
+.result-left{display:grid;gap:12px;animation:rise .45s ease}
+.find-plate{display:grid;grid-template-columns:min(56%,calc(34vh * 400 / 260)) minmax(0,1fr);gap:12px;align-items:start}
+.find-plate .pit{width:100%;margin:0}
+.find-plate .atlas{margin:0;font-size:.88rem}
+.result-left.solo .find-plate{grid-template-columns:min(100%,calc(50vh * 400 / 260))}
+.result-left.solo .find-plate .pit{width:100%}
+.plates{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;align-items:start}
+.plates .portrait{margin:0;grid-template-columns:minmax(96px,38%) 1fr;padding:8px;gap:10px}
+.plates .portrait img{max-height:24vh;width:100%;object-fit:cover}
+.plates .portrait .pn{font-size:.98rem}
+.plates .portrait .pd{font-size:.85rem}
+.plates .portrait small{font-size:.66rem}
+.plates .photo{margin:6px 6px 0;transform:rotate(1.2deg)}
+.plates .photo img{max-height:22vh}
+.plates .photo figcaption{font-size:.66rem}
+.q-done{display:grid;gap:3px;font-size:.88rem;background:#fffaf0;border:1px solid rgba(90,60,30,.3);border-left:4px solid #3d7a35;border-radius:6px;padding:7px 10px;margin:6px 0 10px}
+.qd-q{color:#4a3420}
+.qd-a{font-weight:700;color:#2f6a29}
+.is-result .result{padding:6px 10px;font-size:1rem;margin-bottom:6px}
+.is-result .why{font-size:.92rem;line-height:1.42;margin:4px 0 6px}
+.is-result .card-actions{margin-top:10px;flex-wrap:nowrap;align-items:center}
+.is-result .card-actions .btn:first-child{flex:1 1 auto;min-width:0;font-size:.88rem;padding-left:12px;padding-right:12px}
+.is-result .card-actions .btn.small{flex:none}
+.is-result .dig-grid .dig-honey{height:136px}
+.is-result .dig-grid>.dig-top{grid-template-columns:96px minmax(0,1fr)}
+.is-result .bubble{font-size:.93rem;padding:10px 14px}
+.is-result .fieldcard{padding:12px 16px 14px}
+.newbadge{display:inline-block;background:var(--gold);color:var(--ink);border-radius:10px;padding:1px 7px;font-size:.68rem;letter-spacing:.04em;margin-left:4px;vertical-align:1px}
+@media (max-width:900px){.find-plate,.result-left.solo .find-plate{grid-template-columns:1fr}.is-result .card-actions{flex-wrap:wrap}}
 @media (max-width:900px){
  .title-inner{display:flex;flex-direction:column;align-items:stretch;padding-bottom:0}
  .title-screen .title-honey{position:relative;right:auto;bottom:auto;align-self:center;flex:1 1 0;min-height:110px;height:auto;width:100%;aspect-ratio:auto;margin:4px 0 -2px}
@@ -1142,7 +1174,7 @@ function showTitle() {
   setScreen('<section class="title-screen"><div class="rays"></div><div class="title-inner"><div class="title-left">' +
     '<div class="eyebrow">Human Worlds · An interactive fossil expedition</div>' +
     '<h1 class="logo"><span class="logo-top">Prof Honey</span><span class="logo-and">and the</span><span class="logo-main">Lost Hominins</span></h1>' +
-    '<p class="tagline">Seven vanished human relatives. Thirteen dig sites on three continents. Your mission: uncover the evidence and work out what it really tells us.</p>' +
+    '<p class="tagline">Seven vanished human relatives. Thirteen dig sites on three continents.<span class="tag2">Your mission: uncover the evidence and work out what it really tells us.</span></p>' +
     '<div class="start-row"><label class="namefield">Your name for the expedition report<input id="playerName" maxlength="40" autocomplete="name" placeholder="e.g. Jordan Rivera" value="' + esc(state.name) + '"></label>' +
     '<div class="title-btns">' + (hasSave ? '<button class="btn" id="contBtn">Continue · Chapter ' + ch.num + '</button><button class="btn ghost small" id="newBtn">Start over</button>' : '<button class="btn" id="startBtn">Begin the expedition</button>') + '</div></div>' +
     '<div id="confirmBox"></div>' +
@@ -1447,16 +1479,29 @@ function siteDone(s, pts) {
   if (!state.visited.includes(s.id)) state.visited.push(s.id);
   state.lastSite = s.id; completeStep();
   const pg = PORTRAIT_AT[s.id], img = pg && IMAGES[pg];
-  const portrait = img ? '<div class="portrait"><img src="' + img[0] + '" alt="' + esc(img[1]) + '"><div><div class="reveal">' + (pg === 'den' ? 'The fossil itself' : pg === 'sapiens' ? 'Early Homo sapiens' : 'Who was here?') + '</div><div class="pn">' + ital(G[pg].name) + '</div><div>' + esc(G[pg].dates) + '</div><small>' + esc(img[1]) + ' · ' + esc(img[2]) + '. ' + (pg === 'den' ? 'No reconstructed face: features like hair and expression remain uncertain.' : pg === 'sapiens' ? 'Skull shown is Skhul V from Israel.' : 'A reconstruction: an artist interpreted details the bones can’t show.') + '</small></div></div>' : '';
+  const portrait = img ? '<div class="portrait"><img src="' + img[0] + '" alt="' + esc(img[1]) + '"><div><div class="reveal">' + (pg === 'den' ? 'The fossil itself' : pg === 'sapiens' ? 'Early Homo sapiens' : 'Who was here?') + '</div><div class="pn">' + ital(G[pg].name) + '</div><div class="pd">' + esc(G[pg].dates) + '</div><small>' + esc(img[1]) + ' · ' + esc(img[2]) + '. ' + (pg === 'den' ? 'No reconstructed face: features like hair and expression remain uncertain.' : pg === 'sapiens' ? 'Skull shown is Skhul V from Israel.' : 'A reconstruction: an artist interpreted details the bones can’t show.') + '</small></div></div>' : '';
   const link = SITE_LINKS[s.id] ? ' <a href="' + SITE_LINKS[s.id] + '" target="_blank" rel="noopener">Site evidence</a>' : '';
-  const box = document.createElement('div');
-  box.innerHTML = '<hr style="border:0;border-top:2px dashed rgba(90,60,30,.4);margin:14px 0">' + resultLine(pts, 10) + '<p class="why">' + esc(s.q.why) + '</p>' +
-    '<div class="atlas"><b>Atlas record · ' + esc(s.name) + ', ' + esc(s.place) + '</b><span class="age">' + esc(s.age) + '</span><p>' + esc(s.evidence) + link + '</p></div>' + portrait + sitePhoto(s) +
-    (fresh1 ? '<div class="newentry"><span class="dot" style="background:' + g.color + '"></span><span>New Field Journal entry: <b>' + ital(g.name) + '</b></span></div>' : '') +
-    '<div class="card-actions"><button class="btn" id="onward">' + nextLabel() + '</button><button class="btn ghost small" id="openJ" style="color:#5b2d16">Field Journal</button></div>';
-  $('#fieldCard').appendChild(box);
+  // Left: the find (smaller) with its atlas record, then the portrait and site photo
+  const plates = portrait + sitePhoto(s);
+  const left = document.createElement('div');
+  left.className = 'result-left' + (plates ? '' : ' solo');
+  left.innerHTML = '<div class="find-plate"></div>' + (plates ? '<div class="plates">' + plates + '</div>' : '');
+  const fp = left.querySelector('.find-plate');
+  fp.appendChild($('#pit'));
+  fp.insertAdjacentHTML('beforeend', '<div class="atlas"><b>Atlas record · ' + esc(s.name) + ', ' + esc(s.place) + '</b><span class="age">' + esc(s.age) + '</span><p>' + esc(s.evidence) + link + '</p></div>');
+  const tools = $('.pit-tools'); if (tools) tools.remove();
+  $('.pit-col').appendChild(left);
+  $('.dig-screen').classList.add('is-result');
+  // Right: a compact recap of the question, the score, the explanation and what's next
+  const dna = s.dna ? '<span class="qd-q">DNA lab: who were Denny’s parents?</span><span class="qd-a">✓ Neanderthal mother · Denisovan father</span>' : '';
+  $('#fieldCard').innerHTML = '<div class="q-done">' + dna +
+    '<span class="qd-q"' + (dna ? ' style="margin-top:4px"' : '') + '>' + esc(s.q.prompt) + '</span><span class="qd-a">✓ ' + esc(s.q.o[s.q.a]) + '</span></div>' +
+    resultLine(pts, 10) + '<p class="why">' + esc(s.q.why) + '</p>' +
+    '<div class="card-actions"><button class="btn" id="onward">' + nextLabel() + '</button><button class="btn ghost small" id="openJ" style="color:#5b2d16">Field Journal' + (fresh1 ? ' <span class="newbadge" title="New entry: ' + esc(g.name) + '">New</span>' : '') + '</button></div>';
+  if (fresh1) say('New Field Journal entry: ' + g.name);
   $('#onward').onclick = go; $('#openJ').onclick = () => openJournal(s.g);
-  setTimeout(() => box.scrollIntoView({behavior:'smooth', block:'nearest'}), 150);
+  if (innerWidth <= 900) setTimeout(() => $('#fieldCard').scrollIntoView({behavior:'smooth', block:'start'}), 150);
+  else window.scrollTo({top:0, behavior:'smooth'});
 }
 
 /* DNA lab at Denisova Cave */
