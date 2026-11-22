@@ -425,6 +425,19 @@ button.chip:hover{border-color:var(--red)}
  .certificate{box-shadow:none;background:#fff}
 }
 
+/* easter egg #4: spike trap */
+.spike-trap{position:fixed;z-index:55;pointer-events:none;overflow:hidden}
+.spike-trap .sp-ceil,.spike-trap .sp-floor{position:absolute;left:0;right:0;height:0;display:flex;flex-direction:column;transition:height 2.1s cubic-bezier(.45,0,.75,1)}
+.spike-trap .sp-ceil{top:0;justify-content:flex-end}
+.spike-trap .sp-floor{bottom:0;justify-content:flex-start}
+.spike-trap .sp-slab{flex:1;min-height:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 2px,transparent 2px 38px),repeating-linear-gradient(90deg,rgba(0,0,0,.14) 0 2px,transparent 2px 76px),linear-gradient(#7d6e5b,#5a4d3e);border:3px solid #1e160e}
+.spike-trap .sp-teeth{display:block;width:100%;height:34px;flex:none}
+.spike-trap.closing .sp-ceil,.spike-trap.closing .sp-floor{height:calc(50% - 2px)}
+.spike-trap.gone{opacity:0;transition:opacity .45s ease}
+.sp-covered{transition:opacity 1.9s ease .2s;opacity:0}
+.sp-return{animation:spBack .6s ease}
+@keyframes spBack{from{opacity:0}to{opacity:1}}
+
 .ph{position:relative}
 .ph-svg{width:100%;height:100%;display:block;overflow:visible}
 .ph .ph-lines{opacity:0}
@@ -1344,7 +1357,7 @@ const ICON = {
 
 /* ---------- state ---------- */
 const SAVE_KEY = 'profHoney_lostHominins_v1';
-const fresh = () => ({step:0, name:'', scores:{}, visited:[], unlocked:[], muted:false, lastSite:null, gagDone:false, snakesDone:false, boulderDone:false});
+const fresh = () => ({step:0, name:'', scores:{}, visited:[], unlocked:[], muted:false, lastSite:null, gagDone:false, snakesDone:false, boulderDone:false, spikesDone:false});
 function load() { try { const s = JSON.parse(localStorage.getItem(SAVE_KEY)); if (s && typeof s.step === 'number') return Object.assign(fresh(), s); } catch (e) {} return null; }
 let state = load() || fresh();
 function save() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch (e) {} }
@@ -1390,6 +1403,7 @@ const sfx = (() => {
     stamp() { noise(.14, 'lowpass', 500, 1, .5); tone(90, .18, 'sine', .35); },
     page() { noise(.22, 'highpass', 1800, .7, .05); },
     click() { tone(700, .05, 'square', .025); },
+    grind() { noise(2.1, 'bandpass', 260, 2, .22); tone(70, 2.1, 'sawtooth', .04, 0, 90); },
     rumble() { noise(2.2, 'lowpass', 140, 1, .5); tone(55, 2, 'sine', .25, 0, 40); },
     hiss() { noise(.9, 'highpass', 4200, .8, .05); noise(.7, 'highpass', 5200, .8, .04, 1.1); },
     boing() { tone(420, .35, 'sine', .07, 0, 1250); tone(1250, .5, 'sine', .06, .38, 380); tone(180, .12, 'triangle', .07, 2.05, 120); },
@@ -1494,12 +1508,14 @@ const fx = (() => {
     let seed = 5; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
     const bumps = Array.from({length: 18}, (_, i) => 1 + (rnd() - .5) * .14);
     const cracks = Array.from({length: 6}, () => [rnd() * 6.28, .3 + rnd() * .5, (rnd() - .5) * 1.2]);
-    const dust = [];
+    const dust = [], dirt = [], dcols = ['#8a6a48', '#6b4d30', '#a88762', '#5a4028', '#c2a27a'];
+    for (let i = 0; i < 110; i++) dirt.push({x: Math.random() * cv.width, y: -20 - Math.random() * cv.height * .9, vx: (Math.random() - .5) * .9, vy: Math.random() * 1.4, g: .1 + Math.random() * .08, r: Math.random() < .15 ? 2.8 + Math.random() * 2.2 : 1 + Math.random() * 2, c: dcols[i % 5]});
     (function step(now) {
       const p = Math.min(1, (now - t0) / ms), e = p * p * (3 - 2 * p) * .4 + p * .6;
       const x = x0 + (x1 - x0) * e, y = y0 + (y1 - y0) * e + Math.abs(Math.sin(e * 9)) * -R * .12, rot = (x - x0) / R;
       c.clearRect(0, 0, cv.width, cv.height);
       if (Math.random() < .7) dust.push({x: x - R * .5 + Math.random() * R * .3, y: y + R * .7, r: 8 + Math.random() * 14, a: .45});
+      dirt.forEach(d => { d.vy += d.g; d.x += d.vx; d.y += d.vy; c.globalAlpha = 1 - Math.max(0, p - .75) / .25; c.fillStyle = d.c; c.beginPath(); c.ellipse(d.x, d.y, d.r, d.r * .8, 0, 0, 7); c.fill(); });
       dust.forEach(d => { d.r += .7; d.a -= .012; d.y -= .3; c.globalAlpha = Math.max(0, d.a) * (1 - Math.max(0, p - .7) / .3); c.fillStyle = '#b39572'; c.beginPath(); c.arc(d.x, d.y, d.r, 0, 7); c.fill(); });
       c.globalAlpha = p < .72 ? 1 : Math.max(0, 1 - (p - .72) / .28);
       c.save(); c.translate(x, y); c.rotate(rot);
@@ -1844,7 +1860,8 @@ function showDig(id) {
 /* Easter egg: once per game, the first time a question is missed twice, Prof Honey's hat blows off */
 function playGag(after) {
   const el = $('#screen .ph');
-  if (!el || (state.gagDone && state.snakesDone && state.boulderDone)) { setTimeout(after, 900); return; }
+  if (!el || (state.gagDone && state.snakesDone && state.boulderDone && state.spikesDone)) { setTimeout(after, 900); return; }
+  if (state.gagDone && state.snakesDone && state.boulderDone) return playSpikes(el, after);
   if (state.gagDone && state.snakesDone) return playBoulder(el, after);
   if (state.gagDone) return playSnakes(el, after);
   state.gagDone = true; save();
@@ -1871,6 +1888,29 @@ function playBoulder(el, after) {
   sfx.rumble(); fx.boulderRoll(2300);
   const app = $('#app'); setTimeout(() => { app.classList.remove('quake'); void app.offsetWidth; app.classList.add('quake'); }, 700);
   setTimeout(() => { el._fadeNext = true; after(); }, 2500);
+}
+/* Easter egg #4: a spiked ceiling and floor close in over the left side (once per game) */
+function spikePanel(dir) {
+  const spikes = Array.from({length: 14}, (_, i) => { const x = i * 40; return dir === 'down' ? 'M' + x + ' 0 L' + (x + 20) + ' 34 L' + (x + 40) + ' 0 Z' : 'M' + x + ' 34 L' + (x + 20) + ' 0 L' + (x + 40) + ' 34 Z'; }).join(' ');
+  return '<svg class="sp-teeth" viewBox="0 0 560 34" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="spk' + dir + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#cfc6b8"/><stop offset=".5" stop-color="#8f8679"/><stop offset="1" stop-color="#5d554b"/></linearGradient></defs><path d="' + spikes + '" fill="url(#spk' + dir + ')" stroke="#1e160e" stroke-width="2" stroke-linejoin="round"/></svg>';
+}
+function playSpikes(el, after) {
+  state.spikesDone = true; save();
+  Honey.mount(el, {pose:'oops', mouth:'o', brow:'up'});
+  const bub = $('#screen .bubble'); if (bub) bubble(bub, 'Uh-oh — the walls are closing in! Quick, let’s look at the right answer!');
+  const zone = $('#screen .pit-col') || $('#screen .wide-grid > :first-child') || $('#screen');
+  const r = zone.getBoundingClientRect(), top = Math.max(0, r.top - 12), bottom = Math.min(innerHeight, r.bottom + 12), h = bottom - top;
+  const trap = document.createElement('div');
+  trap.className = 'spike-trap';
+  trap.style.cssText = 'left:' + (r.left - 12) + 'px;width:' + (r.width + 24) + 'px;top:' + top + 'px;height:' + h + 'px';
+  trap.innerHTML = '<div class="sp-ceil"><div class="sp-slab"></div>' + spikePanel('down') + '</div><div class="sp-floor">' + spikePanel('up') + '<div class="sp-slab"></div></div>';
+  document.body.appendChild(trap);
+  sfx.grind();
+  void trap.offsetWidth; trap.classList.add('closing');
+  zone.classList.add('sp-covered');
+  setTimeout(() => { const app = $('#app'); app.classList.remove('quake'); void app.offsetWidth; app.classList.add('quake'); sfx.stamp(); }, 2150);
+  setTimeout(() => trap.classList.add('gone'), 2450);
+  setTimeout(() => { trap.remove(); el._fadeNext = true; after(); zone.classList.remove('sp-covered'); zone.classList.add('sp-return'); setTimeout(() => zone.classList.remove('sp-return'), 700); }, 2950);
 }
 /* Multiple-choice engine. opts: {container, q, item, max, onWrong, onDone} */
 function mcq({container, q, item, max = 10, onWrong, onDone}) {
