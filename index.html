@@ -445,6 +445,8 @@ button.chip:hover{border-color:var(--red)}
 .slot.drop-hover{border-color:var(--gold2);background:rgba(242,199,106,.18)}
 .tray.drop-hover{outline:3px dashed var(--gold2);outline-offset:2px}
 .slot.locked .relic-card{cursor:default;border-color:#3d7a35}
+.slot.fixed{border-style:solid;border-color:var(--gold2);background:rgba(242,199,106,.16)}
+.slot .relic-card{position:relative}
 
 .ph{position:relative}
 .ph-svg{width:100%;height:100%;display:block;overflow:visible}
@@ -2124,7 +2126,7 @@ const TEMPLE = '<svg viewBox="0 0 760 230" aria-hidden="true"><defs><linearGradi
   '<g transform="translate(130 120)"><circle r="34" fill="none" stroke="#c9a24d" stroke-width="3"/><path d="M0 -26 L6 0 L0 26 L-6 0 Z" fill="#c9a24d"/></g><g transform="translate(630 120)"><circle r="34" fill="none" stroke="#c9a24d" stroke-width="3"/><path d="M-26 0 L0 6 L26 0 L0 -6 Z" fill="#c9a24d"/></g></svg>';
 function showTimeline() {
   showTop(true);
-  const placed = [null, null, null, null, null];
+  let placed = [null, null, null, null, null];
   let tray = shuffle(TIMELINE.map(t => t.id));
   setScreen('<h2 class="section-title">The Final Trial · Door One</h2><div class="tl-top"><div class="temple" id="temple">' + TEMPLE + '</div><div class="dig-top guide-row"><div class="dig-honey" id="tlHoney"></div><div class="bubble" id="tlBubble"></div></div></div>' +
     '<div class="tl-labels"><span>◀ Oldest</span><span>Youngest ▶</span></div><div class="slots" id="slots"></div>' +
@@ -2205,6 +2207,19 @@ function showTimeline() {
     const pts = award('timeline', attempt === 1 ? 10 : firstOk.length * 2 + (ok - firstOk.length));
     render();
     $$('.slot').forEach((el, i) => el.classList.add(placed[i] === correct[i] ? 'ok' : 'no'));
+    if (ok < 5) setTimeout(() => {
+      // show the correct order: each misplaced relic glides to its proper slot (FLIP animation)
+      const before = {}; $$('#slots .relic-card').forEach(c => before[c.dataset.id] = c.getBoundingClientRect());
+      const wrong = placed.map((id, i) => id !== correct[i]);
+      placed = correct.slice(); render();
+      $$('.slot').forEach((el, i) => el.classList.add(wrong[i] ? 'fixed' : 'ok'));
+      $$('#slots .relic-card').forEach(c => {
+        const a = before[c.dataset.id], b = c.getBoundingClientRect(); if (!a) return;
+        const dx = a.left - b.left, dy = a.top - b.top; if (!dx && !dy) return;
+        c.animate([{transform: 'translate(' + dx + 'px,' + dy + 'px)', zIndex: 5}, {transform: 'translate(' + dx + 'px,' + (dy - 46) + 'px)', offset: .35, zIndex: 5}, {transform: 'translate(0,-46px)', offset: .75, zIndex: 5}, {transform: 'none'}], {duration: 1300, easing: 'ease-in-out'});
+      });
+      sfx.page();
+    }, 1100);
     const all = ok === 5;
     if (all) sfx.correct(); else { sfx.wrong(); fx.quake(); }
     setTimeout(() => { $('#temple').classList.add('open'); sfx.stamp(); }, all ? 400 : 1400);
