@@ -438,6 +438,14 @@ button.chip:hover{border-color:var(--red)}
 .sp-return{animation:spBack .6s ease}
 @keyframes spBack{from{opacity:0}to{opacity:1}}
 
+/* timeline drag and drop */
+.relic-card{touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+.drag-ghost{position:fixed;z-index:70;pointer-events:none;transform:rotate(-3deg) scale(1.05);box-shadow:0 12px 24px rgba(0,0,0,.45);cursor:grabbing}
+.drag-source{opacity:.35}
+.slot.drop-hover{border-color:var(--gold2);background:rgba(242,199,106,.18)}
+.tray.drop-hover{outline:3px dashed var(--gold2);outline-offset:2px}
+.slot.locked .relic-card{cursor:default;border-color:#3d7a35}
+
 .ph{position:relative}
 .ph-svg{width:100%;height:100%;display:block;overflow:visible}
 .ph .ph-lines{opacity:0}
@@ -2120,35 +2128,90 @@ function showTimeline() {
   let tray = shuffle(TIMELINE.map(t => t.id));
   setScreen('<h2 class="section-title">The Final Trial · Door One</h2><div class="tl-top"><div class="temple" id="temple">' + TEMPLE + '</div><div class="dig-top guide-row"><div class="dig-honey" id="tlHoney"></div><div class="bubble" id="tlBubble"></div></div></div>' +
     '<div class="tl-labels"><span>◀ Oldest</span><span>Youngest ▶</span></div><div class="slots" id="slots"></div>' +
-    '<div id="tlPick"><p class="tl-help">Tap a relic to place it in the next open slot. Tap a placed relic to send it back.</p><div class="tray" id="tray"></div>' +
+    '<div id="tlPick"><p class="tl-help">Drag the relics into order — or tap one to drop it in the next open slot. Drag a placed relic to another slot to swap, or back to the tray.</p><div class="tray" id="tray"></div>' +
     '<div class="card-actions" style="justify-content:center"><button class="btn" id="tlCheck" disabled style="flex:0 1 320px">Open the door</button></div></div><div id="tlResult"></div>');
   Honey.mount($('#tlHoney'), {pose:'point', dur:1.6});
   bubble($('#tlBubble'), 'Legend says this door opens only for those who know their deep time. Arrange the relics from OLDEST to YOUNGEST.');
   const T = Object.fromEntries(TIMELINE.map(t => [t.id, t]));
   const cardHTML = (id, showAge) => '<button class="relic-card" data-id="' + id + '">' + Relics.icon(T[id].relic) + '<span>' + esc(T[id].label) + '</span>' + (showAge ? '<span class="ra">' + esc(T[id].age) + '</span>' : '') + '</button>';
-  let checked = false;
+  let checked = false, attempt = 0, firstOk = [];
+  const locked = new Set();
   function render() {
-    $('#slots').innerHTML = placed.map((id, i) => '<div class="slot" data-slot="' + i + '"><span class="sn">' + (i + 1) + '</span>' + (id ? cardHTML(id, checked) : '') + '</div>').join('');
+    $('#slots').innerHTML = placed.map((id, i) => '<div class="slot' + (locked.has(i) ? ' ok locked' : '') + '" data-slot="' + i + '"><span class="sn">' + (i + 1) + (locked.has(i) ? ' 🔒' : '') + '</span>' + (id ? cardHTML(id, checked || locked.has(i)) : '') + '</div>').join('');
     $('#tray').innerHTML = tray.map(id => cardHTML(id)).join('') || '<p style="grid-column:1/-1;text-align:center;font-family:var(--type);color:#e9d6ad;margin:auto">All relics placed.</p>';
     $('#tlCheck').disabled = checked || placed.includes(null);
   }
   render();
-  $('#tray').onclick = e => { const b = e.target.closest('[data-id]'); if (!b || checked) return; const i = placed.indexOf(null); if (i < 0) return; placed[i] = b.dataset.id; tray = tray.filter(x => x !== b.dataset.id); sfx.click(); render(); };
-  $('#slots').onclick = e => { const b = e.target.closest('[data-id]'); if (!b || checked) return; const i = placed.indexOf(b.dataset.id); placed[i] = null; tray.push(b.dataset.id); sfx.click(); render(); };
+  const tapPlace = id => { const i = placed.indexOf(null); if (i < 0) return; placed[i] = id; tray = tray.filter(x => x !== id); sfx.click(); render(); };
+  const tapReturn = id => { const i = placed.indexOf(id); if (locked.has(i)) return; placed[i] = null; tray.push(id); sfx.click(); render(); };
+  // drag and drop with pointer events (mouse, touch and pen); a press without movement still counts as a tap
+  let drag = null;
+  const area = $('#screen');
+  area.addEventListener('pointerdown', e => {
+    const card = e.target.closest('.relic-card'); if (!card || checked) return;
+    const sl0 = card.closest('.slot'); if (sl0 && locked.has(+sl0.dataset.slot)) return;
+    drag = {id: card.dataset.id, from: card.closest('.slot') ? 'slot' : 'tray', card, x0: e.clientX, y0: e.clientY, ghost: null};
+    try { card.setPointerCapture(e.pointerId); } catch (_) {}
+    e.preventDefault();
+  });
+  area.addEventListener('pointermove', e => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x0, dy = e.clientY - drag.y0;
+    if (!drag.ghost && Math.hypot(dx, dy) < 6) return;
+    if (!drag.ghost) {
+      const r = drag.card.getBoundingClientRect();
+      drag.ghost = drag.card.cloneNode(true); drag.ghost.classList.add('drag-ghost');
+      drag.ghost.style.cssText = 'width:' + r.width + 'px;left:' + r.left + 'px;top:' + r.top + 'px';
+      drag.ox = drag.x0 - r.left; drag.oy = drag.y0 - r.top;
+      document.body.appendChild(drag.ghost); drag.card.classList.add('drag-source');
+    }
+    drag.ghost.style.left = (e.clientX - drag.ox) + 'px'; drag.ghost.style.top = (e.clientY - drag.oy) + 'px';
+    $$('.slot').forEach(sl => sl.classList.remove('drop-hover')); $('#tray').classList.remove('drop-hover');
+    const under = document.elementFromPoint(e.clientX, e.clientY), sl = under && under.closest('.slot'), tr = under && under.closest('#tray');
+    if (sl) sl.classList.add('drop-hover'); else if (tr) tr.classList.add('drop-hover');
+  });
+  const endDrag = e => {
+    if (!drag) return;
+    const d = drag; drag = null;
+    if (!d.ghost) { d.from === 'tray' ? tapPlace(d.id) : tapReturn(d.id); return; }
+    d.ghost.remove();
+    const under = document.elementFromPoint(e.clientX, e.clientY), sl = under && under.closest('.slot'), tr = under && under.closest('#tray');
+    const fromIdx = placed.indexOf(d.id);
+    if (sl && locked.has(+sl.dataset.slot)) { render(); return; }
+    if (sl) {
+      const to = +sl.dataset.slot, occupant = placed[to];
+      if (fromIdx >= 0) { placed[fromIdx] = occupant; } else { tray = tray.filter(x => x !== d.id); if (occupant) tray.push(occupant); }
+      placed[to] = d.id; sfx.click();
+    } else if (tr && fromIdx >= 0) { placed[fromIdx] = null; tray.push(d.id); sfx.click(); }
+    render();
+  };
+  area.addEventListener('pointerup', endDrag);
+  area.addEventListener('pointercancel', () => { if (drag && drag.ghost) drag.ghost.remove(); drag = null; render(); });
   $('#tlCheck').onclick = () => {
-    checked = true; $('#tlPick').hidden = true;
     const correct = TIMELINE.map(t => t.id);
     let ok = 0; placed.forEach((id, i) => { if (id === correct[i]) ok++; });
-    const pts = award('timeline', ok * 2);
+    attempt++;
+    if (attempt === 1 && ok < 5) {
+      // lock the correct relics, send the rest back to the tray, allow one more try
+      placed.forEach((id, i) => { if (id === correct[i]) { locked.add(i); firstOk.push(i); } else { if (id) tray.push(id); placed[i] = null; } });
+      sfx.wrong(); fx.quake(); render();
+      Honey.mount($('#tlHoney'), {pose:'point', dur:.8});
+      bubble($('#tlBubble'), ok + ' of 5 are in the right place — I’ve locked those in. Rearrange the rest and try the door again!');
+      $('#tlCheck').textContent = 'Try the door again';
+      return;
+    }
+    checked = true; $('#tlPick').hidden = true;
+    // 2 points for each relic right on the first try, 1 point for each fixed on the second
+    const pts = award('timeline', attempt === 1 ? 10 : firstOk.length * 2 + (ok - firstOk.length));
     render();
     $$('.slot').forEach((el, i) => el.classList.add(placed[i] === correct[i] ? 'ok' : 'no'));
     const all = ok === 5;
     if (all) sfx.correct(); else { sfx.wrong(); fx.quake(); }
     setTimeout(() => { $('#temple').classList.add('open'); sfx.stamp(); }, all ? 400 : 1400);
     Honey.mount($('#tlHoney'), all ? {pose:'tip', mouth:'grin', dur:1} : {pose:'oops', mouth:'o', brow:'up', dur:1});
-    bubble($('#tlBubble'), all ? 'Perfect order — the door is opening! You know your deep time.' : ok + ' of 5 in the right place. The door grinds open anyway… but study the correct order below!');
+    bubble($('#tlBubble'), all ? (attempt === 1 ? 'Perfect order — the door is opening! You know your deep time.' : 'You fixed it — the door is opening! Nicely reasoned.') : ok + ' of 5 in the right place. The door grinds open anyway… but study the correct order below!');
     completeStep();
-    $('#tlResult').innerHTML = '<div class="fieldcard paper tl-result"><div class="result' + (all ? '' : ok ? ' half' : ' zero') + '">+' + pts + ' points · ' + ok + ' of 5 placed correctly</div>' +
+    $('#tlResult').innerHTML = '<div class="fieldcard paper tl-result"><div class="result' + (pts === 10 ? '' : pts ? ' half' : ' zero') + '">+' + pts + ' points · ' + ok + ' of 5 placed correctly' + (attempt > 1 ? ' after two tries' : '') + '</div>' +
       '<p class="why"><b>Correct order:</b> ' + TIMELINE.map(t => esc(t.label.replace(/ (footprints|stone tools|flints|bones|skeleton \(LB1\))$/, '')) + ' <i>(' + esc(t.age.replace('About ', '~').replace(' years ago', '')) + ')</i>').join(' → ') + '. The later finds crowd together: the last 300,000 years are a thin slice of the hominin story.</p>' +
       '<div class="card-actions"><button class="btn" id="onward">' + nextLabel() + '</button></div></div>';
     $('#onward').onclick = go;
