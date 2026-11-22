@@ -780,6 +780,31 @@ const Honey = (() => {
     {d:'M 104 338 C 108 337 112 338 115 341 M 103 346 C 107 345 112 346 116 349', w:1, s:GL_LINE, nl:1}
   ];
   const hipR = hipL.map(s => Object.assign({}, s, {d:mx(s.d)}));
+  // capsule (finger) from base point, length, width, angle (deg, 0 = straight up)
+  function capsule(x, y, len, w, ang) {
+    const a = ang * Math.PI / 180, r = w / 2, ux = Math.sin(a), uy = -Math.cos(a), nx = Math.cos(a), ny = Math.sin(a);
+    const tx = x + ux * len, ty = y + uy * len, f = v => v.toFixed(2);
+    return 'M ' + f(x - nx * r) + ' ' + f(y - ny * r) + ' L ' + f(tx - nx * r) + ' ' + f(ty - ny * r) + ' A ' + f(r) + ' ' + f(r) + ' 0 0 1 ' + f(tx + nx * r) + ' ' + f(ty + ny * r) + ' L ' + f(x + nx * r) + ' ' + f(y + ny * r) + ' Z';
+  }
+  const PALM = '#8a6a48', PALM_LINE = '#4a3424';
+  function openHand(side) {
+    const X = x => side === 1 ? x : 300 - x, A = ang => ang * side;
+    const pathX = d => side === 1 ? d : mx(d);
+    const sleeve = [
+      {d:pathX('M 106 246 C 92 248 80 254 72 264 C 62 282 54 302 50 320 C 56 334 74 334 78 322 C 82 306 88 294 96 286 C 100 272 102 260 106 246 Z'), f:JACKET, w:2.4},
+      {d:pathX('M 46 324 C 46 292 50 262 54 236 L 76 240 C 74 264 72 294 72 324 C 64 330 52 330 46 324 Z'), f:JACKET, w:2.3}
+    ];
+    // index (thumb side, outer) → pinky (inner); similar lengths so no finger stands out
+    const fingers = [[54.5, 209, 19, -15], [60.2, 207, 20.5, -5], [66, 207.5, 20, 5], [71.5, 210, 17, 16]];
+    const hand = [
+      {d:capsule(X(51), 229, 16, 7, A(-48)), f:PALM, w:1.8},
+      ...fingers.map(([x, y, len, ang]) => ({d:capsule(X(x), y, len, 6.4, A(ang)), f:PALM, w:1.7})),
+      {d:pathX('M 50 213 C 50 207 55 204 63 204 C 71 204 76 207 76 213 L 76 232 C 76 240 70 244 63 244 C 56 244 50 240 50 232 Z'), f:PALM, w:2},
+      {d:pathX('M 55 221 C 59 224 66 224 71 219 M 56 230 C 60 228 66 228 70 231'), w:1, s:PALM_LINE, nl:1}
+    ];
+    const cuff = [{d:pathX('M 53 236 L 77 238 L 76 251 L 52 249 Z'), f:JACKET_D, w:1.9}];
+    return [...sleeve, ...hand, ...cuff];
+  }
   const arms = {
     brush:[
       {d:'M 194 246 C 208 246 222 252 230 262 C 244 282 258 310 270 334 C 268 350 248 354 240 342 C 232 326 220 310 208 298 C 200 282 196 264 194 246 Z', f:JACKET, w:2.4},
@@ -807,13 +832,7 @@ const Honey = (() => {
       {d:'M 256 240 C 252 228 256 218 266 216 L 266 192 C 266 183 277 183 277 192 L 277 218 C 285 222 287 234 283 242 C 275 248 262 248 256 240 Z', f:GLOVE, w:2.1},
       {d:'M 258 228 C 266 226 274 226 282 230', w:1, s:GL_LINE, nl:1}
     ],
-    oops:[
-      {d:'M 106 246 C 92 248 80 254 72 264 C 62 282 54 302 50 320 C 56 334 74 334 78 322 C 82 306 88 294 96 286 C 100 272 102 260 106 246 Z', f:JACKET, w:2.4},
-      {d:'M 46 324 C 46 292 50 262 54 238 L 76 240 C 74 264 72 294 72 324 C 64 330 52 330 46 324 Z', f:JACKET, w:2.3},
-      {d:'M 53 236 L 77 238 L 76 251 L 52 249 Z', f:JACKET_D, w:1.9},
-      {d:'M 50 240 C 44 222 44 204 50 194 C 54 188 60 192 60 200 L 60 188 C 60 180 68 180 69 188 L 70 198 C 72 190 80 190 80 198 L 78 212 C 82 206 89 208 87 216 C 83 228 78 236 74 242 Z', f:GLOVE, w:2},
-      {d:'M 60 200 L 61 214 M 70 198 L 70 214', w:1, s:GL_LINE, nl:1}
-    ].flatMap(s => [s, Object.assign({}, s, {d:mx(s.d)})])
+    oops:[1, -1].flatMap(side => openHand(side))
   };
   const POSES = {
     idle:{behind:[], front:[...hipL, ...hipR]},
