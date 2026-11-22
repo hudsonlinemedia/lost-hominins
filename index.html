@@ -1216,7 +1216,7 @@ const fx = (() => {
   }
   function rockfall() {
     const cols = ['#8a6a48', '#6b4d30', '#a88762', '#5a4028', '#c2a27a'];
-    for (let i = 0; i < 26; i++) parts.push({x: Math.random() * cv.width, y: -10 - Math.random() * 120, vx: (Math.random() - .5) * .8, vy: Math.random() * 1.2, g: .09 + Math.random() * .06, r: .8 + Math.random() * 1.6, c: cols[i % 5], life: 120});
+    for (let i = 0; i < 60; i++) parts.push({x: Math.random() * cv.width, y: -10 - Math.random() * 160, vx: (Math.random() - .5) * .9, vy: Math.random() * 1.3, g: .09 + Math.random() * .07, r: Math.random() < .12 ? 2.6 + Math.random() * 1.6 : .9 + Math.random() * 1.8, c: cols[i % 5], life: 140});
     if (!running) { running = true; requestAnimationFrame(loop); }
   }
   function quake() { const app = $('#app'); app.classList.remove('quake'); void app.offsetWidth; app.classList.add('quake'); rockfall(); }
