@@ -427,13 +427,13 @@ button.chip:hover{border-color:var(--red)}
 
 /* easter egg #4: spike trap */
 .spike-trap{position:fixed;z-index:55;pointer-events:none;overflow:hidden}
-.spike-trap .sp-ceil,.spike-trap .sp-floor{position:absolute;left:0;right:0;height:0;display:flex;flex-direction:column;transition:height 2.8s cubic-bezier(.45,0,.7,1)}
+.spike-trap .sp-ceil,.spike-trap .sp-floor{position:absolute;left:0;right:0;height:0;display:flex;flex-direction:column;transition:height 3.1s linear}
 .spike-trap .sp-ceil{top:0;justify-content:flex-end}
 .spike-trap .sp-floor{bottom:0;justify-content:flex-start}
 .spike-trap .sp-slab{flex:1;min-height:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 2px,transparent 2px 38px),repeating-linear-gradient(90deg,rgba(0,0,0,.14) 0 2px,transparent 2px 76px),linear-gradient(#7d6e5b,#5a4d3e);border:3px solid #1e160e}
 .spike-trap .sp-teeth{display:block;width:100%;height:110px;flex:none}
-.spike-trap.closing .sp-ceil,.spike-trap.closing .sp-floor{height:calc(50% + 38px)}
-.spike-trap.gone{opacity:0;transition:opacity .45s ease}
+.spike-trap.closing .sp-ceil,.spike-trap.closing .sp-floor{height:calc(50% + 80px)}
+.spike-trap.gone{opacity:0;transition:opacity .6s ease-in}
 .sp-covered{transition:opacity 2.5s ease .2s;opacity:0}
 .sp-return{animation:spBack .6s ease}
 @keyframes spBack{from{opacity:0}to{opacity:1}}
@@ -1403,7 +1403,7 @@ const sfx = (() => {
     stamp() { noise(.14, 'lowpass', 500, 1, .5); tone(90, .18, 'sine', .35); },
     page() { noise(.22, 'highpass', 1800, .7, .05); },
     click() { tone(700, .05, 'square', .025); },
-    grind() { noise(2.8, 'bandpass', 260, 2, .22); tone(70, 2.8, 'sawtooth', .04, 0, 90); },
+    grind() { noise(2.6, 'bandpass', 260, 2, .22); tone(70, 2.6, 'sawtooth', .04, 0, 90); },
     rumble() { noise(2.2, 'lowpass', 140, 1, .5); tone(55, 2, 'sine', .25, 0, 40); },
     hiss() { noise(.9, 'highpass', 4200, .8, .05); noise(.7, 'highpass', 5200, .8, .04, 1.1); },
     boing() { tone(420, .35, 'sine', .07, 0, 1250); tone(1250, .5, 'sine', .06, .38, 380); tone(180, .12, 'triangle', .07, 2.05, 120); },
@@ -1910,9 +1910,10 @@ function playSpikes(el, after) {
   sfx.grind();
   void trap.offsetWidth; trap.classList.add('closing');
   zone.classList.add('sp-covered');
-  setTimeout(() => { const app = $('#app'); app.classList.remove('quake'); void app.offsetWidth; app.classList.add('quake'); sfx.stamp(); }, 2850);
-  setTimeout(() => trap.classList.add('gone'), 3200);
-  setTimeout(() => { trap.remove(); el._fadeNext = true; after(); zone.classList.remove('sp-covered'); zone.classList.add('sp-return'); setTimeout(() => zone.classList.remove('sp-return'), 700); }, 3700);
+  // the rows keep closing past the touch point; the fade starts exactly when the spike tips meet
+  const DUR = 3100, travel = h / 2 + 80, meet = Math.round(DUR * (h / 2) / travel);
+  setTimeout(() => { trap.classList.add('gone'); const app = $('#app'); app.classList.remove('quake'); void app.offsetWidth; app.classList.add('quake'); sfx.stamp(); }, meet);
+  setTimeout(() => { trap.remove(); el._fadeNext = true; after(); zone.classList.remove('sp-covered'); zone.classList.add('sp-return'); setTimeout(() => zone.classList.remove('sp-return'), 700); }, DUR + 150);
 }
 /* Multiple-choice engine. opts: {container, q, item, max, onWrong, onDone} */
 function mcq({container, q, item, max = 10, onWrong, onDone}) {
