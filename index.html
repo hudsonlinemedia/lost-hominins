@@ -1415,6 +1415,7 @@ const sfx = (() => {
       const g = a.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.08, t + .3); g.gain.setValueAtTime(.08, t + d - .35); g.gain.linearRampToValueAtTime(0, t + d);
       const lfo = a.createOscillator(); lfo.frequency.value = 19; const lg = a.createGain(); lg.gain.value = .04; lfo.connect(lg).connect(g.gain);
       o.connect(f).connect(g).connect(a.destination); o.start(t); lfo.start(t); o.stop(t + d + .1); lfo.stop(t + d + .1);
+      return { stop() { try { const n = a.currentTime; g.gain.cancelScheduledValues(n); g.gain.setValueAtTime(g.gain.value, n); g.gain.linearRampToValueAtTime(0, n + .25); o.stop(n + .3); lfo.stop(n + .3); } catch (e) {} } };
     }
   };
 })();
@@ -1733,9 +1734,9 @@ function travel(id) {
   mp.style.strokeDasharray = len + ' ' + len; mp.style.strokeDashoffset = len;
   const dur = Math.max(1300, Math.min(2800, len * 5)) + 2000;
   const scroller = $('#mapScroll');
-  sfx.plane(dur);
+  const engine = sfx.plane(dur);
   let t0 = null, finished = false;
-  const finish = () => { if (finished) return; finished = true; setTimeout(() => showDig(id), 250); };
+  const finish = () => { if (finished) return; finished = true; if (engine) engine.stop(); setTimeout(() => showDig(id), 250); };
   $('#skipFly').onclick = finish;
   function step(ts) {
     if (finished) return;
