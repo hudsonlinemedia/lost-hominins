@@ -1424,35 +1424,46 @@ const fx = (() => {
   // friendly cartoon snakes that drop from the top, land, wiggle and slither off
   let snakes = [], snakeRun = false;
   function drawSnake(sn, t) {
-    const seg = 14, L = sn.len, pts = [];
+    const seg = 26, L = sn.len, pts = [], ca = Math.cos(sn.ang), sa = Math.sin(sn.ang);
     for (let i = 0; i <= seg; i++) {
       const u = i / seg, along = u * L;
-      const amp = sn.landed ? 9 : 5;
-      const off = Math.sin(u * Math.PI * 2.2 - t * sn.speed + sn.phase) * amp * (0.4 + u * .6);
-      const ca = Math.cos(sn.ang), sa = Math.sin(sn.ang);
+      const amp = (sn.landed ? 15 : 11) * Math.min(1, u * 3);
+      const off = Math.sin(u * Math.PI * 3 - t * sn.speed + sn.phase) * amp;
       pts.push([sn.x - ca * along - sa * off, sn.y - sa * along + ca * off]);
     }
+    const width = u => sn.w * (u < .12 ? .78 + u * 1.8 : Math.max(.12, 1 - (u - .12) * 1.05));
     c.lineCap = 'round'; c.lineJoin = 'round';
-    const path = w => { c.lineWidth = w; c.beginPath(); pts.forEach(([x, y], i) => i ? c.lineTo(x, y) : c.moveTo(x, y)); c.stroke(); };
-    c.strokeStyle = '#1d2b12'; path(sn.w + 4);
-    c.strokeStyle = sn.col; path(sn.w);
-    c.strokeStyle = 'rgba(245,226,120,.85)'; c.setLineDash([5, 7]); path(sn.w * .35); c.setLineDash([]);
-    // head
-    const [hx, hy] = pts[0], ca = Math.cos(sn.ang), sa = Math.sin(sn.ang);
-    c.fillStyle = sn.col; c.strokeStyle = '#1d2b12'; c.lineWidth = 2;
-    c.beginPath(); c.ellipse(hx, hy, sn.w * .95, sn.w * .75, sn.ang, 0, 7); c.fill(); c.stroke();
-    // tongue
-    if (Math.sin(t * 9 + sn.phase) > .2) {
-      const tx = hx + ca * sn.w * 1.6, ty = hy + sa * sn.w * 1.6;
-      c.strokeStyle = '#d62b22'; c.lineWidth = 1.6; c.beginPath(); c.moveTo(hx + ca * sn.w * .8, hy + sa * sn.w * .8); c.lineTo(tx, ty);
-      c.lineTo(tx + Math.cos(sn.ang + .5) * 4, ty + Math.sin(sn.ang + .5) * 4); c.moveTo(tx, ty); c.lineTo(tx + Math.cos(sn.ang - .5) * 4, ty + Math.sin(sn.ang - .5) * 4); c.stroke();
+    // tapered body: outline pass then colour pass, segment by segment
+    for (let pass = 0; pass < 3; pass++) for (let i = 0; i < seg; i++) {
+      const u = i / seg, w = width(u);
+      c.strokeStyle = pass === 0 ? '#16220d' : pass === 1 ? sn.col : sn.belly;
+      c.lineWidth = pass === 0 ? w + 3.5 : pass === 1 ? w : w * .3;
+      if (pass === 2) { c.globalAlpha *= 1; }
+      c.beginPath(); c.moveTo(pts[i][0], pts[i][1]); c.lineTo(pts[i + 1][0], pts[i + 1][1]);
+      if (pass === 2) { c.save(); c.translate(0, w * .22); c.stroke(); c.restore(); } else c.stroke();
     }
-    // googly eyes
+    // diamond pattern along the back
+    c.fillStyle = sn.dark;
+    for (let i = 3; i < seg - 3; i += 2) {
+      const [x0, y0] = pts[i], [x1, y1] = pts[i + 1], a = Math.atan2(y1 - y0, x1 - x0), w = width(i / seg) * .38;
+      c.save(); c.translate(x0, y0); c.rotate(a); c.beginPath(); c.moveTo(-w * 1.2, 0); c.lineTo(0, -w); c.lineTo(w * 1.2, 0); c.lineTo(0, w); c.closePath(); c.fill(); c.restore();
+    }
+    // head: wide, flat, diamond-ish, pointing away from the body
+    const [hx, hy] = pts[0], [nx, ny] = pts[2], ha = Math.atan2(hy - ny, hx - nx), hw = sn.w * 1.05;
+    c.save(); c.translate(hx, hy); c.rotate(ha);
+    c.beginPath(); c.moveTo(-hw * .6, -hw * .55); c.quadraticCurveTo(hw * .5, -hw * 1.05, hw * 1.45, -hw * .2); c.quadraticCurveTo(hw * 1.7, 0, hw * 1.45, hw * .2); c.quadraticCurveTo(hw * .5, hw * 1.05, -hw * .6, hw * .55); c.closePath();
+    c.fillStyle = sn.col; c.fill(); c.strokeStyle = '#16220d'; c.lineWidth = 2; c.stroke();
+    c.fillStyle = sn.dark; c.beginPath(); c.moveTo(hw * .1, 0); c.lineTo(hw * .55, -hw * .2); c.lineTo(hw * 1, 0); c.lineTo(hw * .55, hw * .2); c.closePath(); c.fill();
+    // tongue
+    if (Math.sin(t * 9 + sn.phase) > .1) {
+      c.strokeStyle = '#d62b22'; c.lineWidth = 1.6; c.beginPath(); c.moveTo(hw * 1.6, 0); c.lineTo(hw * 2.3, 0); c.lineTo(hw * 2.65, -hw * .22); c.moveTo(hw * 2.3, 0); c.lineTo(hw * 2.65, hw * .22); c.stroke();
+    }
+    // eyes on the sides of the head, friendly round pupils
     [-1, 1].forEach(k => {
-      const ex = hx + ca * 2 - sa * k * sn.w * .45, ey = hy + sa * 2 + ca * k * sn.w * .45;
-      c.fillStyle = '#fff'; c.beginPath(); c.arc(ex, ey, sn.w * .32, 0, 7); c.fill(); c.strokeStyle = '#1d2b12'; c.lineWidth = 1; c.stroke();
-      c.fillStyle = '#111'; c.beginPath(); c.arc(ex + ca * 1.2, ey + sa * 1.2 + Math.sin(t * 6 + k) * .8, sn.w * .15, 0, 7); c.fill();
+      c.fillStyle = '#f3e7a0'; c.beginPath(); c.ellipse(hw * .65, k * hw * .5, hw * .26, hw * .2, 0, 0, 7); c.fill(); c.strokeStyle = '#16220d'; c.lineWidth = 1.1; c.stroke();
+      c.fillStyle = '#111'; c.beginPath(); c.ellipse(hw * .7, k * hw * .5, hw * .07, hw * .16, 0, 0, 7); c.fill();
     });
+    c.restore();
   }
   function snakeLoop(now) {
     if (!snakeRun) return;
@@ -1470,9 +1481,9 @@ const fx = (() => {
     if (snakes.length) requestAnimationFrame(snakeLoop); else { snakeRun = false; c.clearRect(0, 0, cv.width, cv.height); }
   }
   function snakeRain() {
-    const cols = ['#5fa83a', '#7cb342', '#4e9a52', '#8fbf3f'], now = performance.now(), n = Math.max(7, Math.round(cv.width / 130));
+    const cols = ['#5c9a3a', '#6f9e32', '#4f8a4a', '#7fa83c'], now = performance.now(), n = Math.max(6, Math.round(cv.width / 160));
     snakes = [];
-    for (let i = 0; i < n; i++) snakes.push({x: 40 + Math.random() * (cv.width - 80), y: -60 - Math.random() * 140, vy: 0, len: 70 + Math.random() * 50, w: 10 + Math.random() * 4, ang: Math.PI / 2 + (Math.random() - .5) * 1.2, spin: (Math.random() - .5) * .03, phase: Math.random() * 6, speed: 6, col: cols[i % 4], dir: Math.random() < .5 ? -1 : 1, start: now + i * 140 + Math.random() * 120, landed: false, alpha: 1});
+    for (let i = 0; i < n; i++) snakes.push({x: 40 + Math.random() * (cv.width - 80), y: -60 - Math.random() * 140, vy: 0, len: 110 + Math.random() * 60, w: 14 + Math.random() * 4, belly: '#e9d98a', dark: '#2f4d1c', ang: Math.PI / 2 + (Math.random() - .5) * 1.2, spin: (Math.random() - .5) * .03, phase: Math.random() * 6, speed: 6, col: cols[i % 4], dir: Math.random() < .5 ? -1 : 1, start: now + i * 140 + Math.random() * 120, landed: false, alpha: 1});
     parts = []; snakeRun = true; requestAnimationFrame(snakeLoop);
   }
   function quake() { const app = $('#app'); app.classList.remove('quake'); void app.offsetWidth; app.classList.add('quake'); rockfall(); }
