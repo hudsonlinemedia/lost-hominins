@@ -1396,7 +1396,7 @@ const sfx = (() => {
     f.connect(g).connect(a.destination);
   }
   return {
-    brush() { const n = performance.now(); if (n - lastBrush < 75) return; lastBrush = n; noise(.07, 'bandpass', 2000 + Math.random() * 2200, 1.1, .045); },
+    brush() { const n = performance.now(); if (n - lastBrush < 75) return; lastBrush = n; noise(.07, 'bandpass', 2000 + Math.random() * 2200, 1.1, .065); },
     correct() { brass(392, .13, 0); brass(523, .13, .13); brass(659, .13, .26); brass(784, .5, .39, .1); brass(523, .5, .39, .05); },
     wrong() { tone(330, .16, 'triangle', .06); tone(262, .26, 'triangle', .06, .12); noise(.25, 'lowpass', 300, 1, .08); },
     reveal() { [784, 988, 1175, 1568].forEach((f, i) => tone(f, .35, 'triangle', .05, i * .07)); },
@@ -1415,7 +1415,7 @@ const sfx = (() => {
       const g = a.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.08, t + .3); g.gain.setValueAtTime(.08, t + d - .35); g.gain.linearRampToValueAtTime(0, t + d);
       const lfo = a.createOscillator(); lfo.frequency.value = 19; const lg = a.createGain(); lg.gain.value = .04; lfo.connect(lg).connect(g.gain);
       o.connect(f).connect(g).connect(a.destination); o.start(t); lfo.start(t); o.stop(t + d + .1); lfo.stop(t + d + .1);
-      return { stop() { try { const n = a.currentTime; g.gain.cancelScheduledValues(n); g.gain.setValueAtTime(g.gain.value, n); g.gain.linearRampToValueAtTime(0, n + .25); o.stop(n + .3); lfo.stop(n + .3); } catch (e) {} } };
+      return { stop() { try { const n = a.currentTime; g.gain.cancelScheduledValues(n); g.gain.setValueAtTime(g.gain.value, n); g.gain.linearRampToValueAtTime(0, n + .35); o.stop(n + .4); lfo.stop(n + .4); } catch (e) {} } };
     }
   };
 })();
