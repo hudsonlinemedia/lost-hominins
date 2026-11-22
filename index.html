@@ -38,8 +38,8 @@ a{color:#9c2a1c}
 .score{font-family:var(--display);background:var(--ink);color:var(--gold2);border-radius:20px;padding:6px 12px;font-size:.9rem;border:1.5px solid #6b4a2b;white-space:nowrap}
 main{max-width:1300px;margin:0 auto;padding:clamp(10px,2vw,24px)}
 main:focus{outline:none}
-.quake{animation:quake .5s linear}
-@keyframes quake{10%,50%,90%{transform:translate(-5px,2px)}30%,70%{transform:translate(5px,-2px)}20%,60%{transform:translate(-3px,-3px)}40%,80%{transform:translate(3px,3px)}}
+.quake{animation:quake .32s ease-in-out}
+@keyframes quake{20%{transform:translateX(-2px)}50%{transform:translateX(2px)}80%{transform:translateX(-1px)}}
 #fxCanvas{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:60}
 
 /* title */
@@ -123,14 +123,14 @@ main:focus{outline:none}
 .dig-honey{height:clamp(160px,20vw,250px)}
 .dig-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr);grid-template-areas:'pit top' 'pit card';grid-template-rows:auto 1fr;gap:14px 20px;align-items:start}
 .dig-grid>.dig-top{grid-area:top;grid-template-columns:118px minmax(0,1fr);margin:0;gap:12px}
-.dig-grid .dig-honey{height:168px}
+.dig-grid .dig-honey{height:min(168px,24vh)}
 .pit-col{grid-area:pit}
 .card-col{grid-area:card}
 .pit-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px}
 .pit-head h2{font-family:var(--display);font-weight:700;font-synthesis:none;font-size:clamp(1.4rem,3vw,2rem);color:var(--gold2);text-transform:uppercase;letter-spacing:.03em;text-shadow:2px 2px 0 #000}
 .pit-head h2 small{font-family:var(--type);font-size:.9rem;color:#e9d6ad;text-transform:none;letter-spacing:0;text-shadow:none}
 .badge{font-family:var(--type);font-size:.75rem;background:var(--red);color:#fff3dc;border-radius:4px;padding:3px 8px;letter-spacing:.05em}
-.pit{position:relative;aspect-ratio:400/260;width:min(100%,calc(62vh * 400 / 260));margin:0 auto;border-radius:10px;overflow:hidden;border:5px solid #3a2414;box-shadow:inset 0 0 0 2px #7a5634,0 10px 24px rgba(0,0,0,.55);background:#6e4a28;touch-action:none;user-select:none;-webkit-user-select:none;cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg transform='rotate(35 20 20)'%3E%3Crect x='17' y='2' width='6' height='18' fill='%23a87a4c' stroke='%232a1b10'/%3E%3Crect x='15' y='19' width='10' height='5' fill='%23c8bfa8' stroke='%232a1b10'/%3E%3Cpath d='M14 24 L26 24 L27 36 L13 36 Z' fill='%23e9dab4' stroke='%232a1b10'/%3E%3C/g%3E%3C/svg%3E") 8 34,crosshair}
+.pit{position:relative;aspect-ratio:400/260;width:min(100%,calc(58vh * 400 / 260));margin:0 auto;border-radius:10px;overflow:hidden;border:5px solid #3a2414;box-shadow:inset 0 0 0 2px #7a5634,0 10px 24px rgba(0,0,0,.55);background:#6e4a28;touch-action:none;user-select:none;-webkit-user-select:none;cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg transform='rotate(35 20 20)'%3E%3Crect x='17' y='2' width='6' height='18' fill='%23a87a4c' stroke='%232a1b10'/%3E%3Crect x='15' y='19' width='10' height='5' fill='%23c8bfa8' stroke='%232a1b10'/%3E%3Cpath d='M14 24 L26 24 L27 36 L13 36 Z' fill='%23e9dab4' stroke='%232a1b10'/%3E%3C/g%3E%3C/svg%3E") 8 34,crosshair}
 .pit.done{cursor:default;touch-action:auto}
 .pit-art,.pit canvas{position:absolute;inset:0;width:100%;height:100%}
 .pit-art svg{width:100%;height:100%;display:block}
@@ -170,8 +170,8 @@ button.chip:hover{border-color:var(--red)}
 .atlas b{font-family:var(--type);font-weight:400;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:#7a2a16;display:block}
 .atlas .age{font-style:italic;color:#5a4430;font-size:.85rem}
 .photo{background:#fffdf6;padding:8px 8px 6px;box-shadow:0 5px 12px rgba(0,0,0,.35);transform:rotate(-1.4deg);position:relative;margin:8px 6px 16px}
-.photo img{width:100%;display:block;filter:sepia(.3) contrast(1.04);max-height:220px;object-fit:cover}
-.photo figcaption{font-size:.72rem;color:#5a4430;margin-top:4px;line-height:1.3}
+.photo img{width:100%;display:block;filter:sepia(.3) contrast(1.04);max-height:min(220px,20vh);object-fit:cover}
+.photo figcaption{font-size:.68rem;color:#5a4430;margin-top:3px;line-height:1.25}
 .photo::before,.photo::after{content:'';position:absolute;width:64px;height:20px;background:rgba(238,222,176,.8);top:-9px;left:-12px;transform:rotate(-9deg);box-shadow:0 1px 2px rgba(0,0,0,.2)}
 .photo::after{left:auto;right:-12px;transform:rotate(10deg)}
 .portrait{margin:12px 0;display:grid;grid-template-columns:minmax(110px,40%) 1fr;gap:12px;align-items:center;background:#2a1b10;color:#f4e7c8;border-radius:8px;padding:10px;border:3px solid #c9a24d}
@@ -212,7 +212,7 @@ button.chip:hover{border-color:var(--red)}
 .relic-card .ra{font-family:var(--type);font-size:.7rem;color:#5a4430}
 .relic-card:hover{border-color:var(--red)}
 .tray{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;min-height:120px;padding:10px;border-radius:10px;background:rgba(0,0,0,.25);border:1.5px solid #5a3e22}
-.tl-labels{display:flex;justify-content:space-between;font-family:var(--type);color:#e9d6ad;font-size:.85rem}
+.tl-labels{display:flex;justify-content:space-between;font-family:var(--type);color:#e9d6ad;font-size:.8rem;line-height:1.2}
 .em-card{max-width:760px;margin:0 auto;padding:clamp(16px,3vw,28px);text-align:center}
 .em-count{font-family:var(--type);font-size:.85rem;color:#5a4430}
 .em-statement{font-family:var(--type);font-size:clamp(1.15rem,2.6vw,1.5rem);line-height:1.4;margin:16px 0 20px;padding:18px;background:#fffaf0;border:2px solid #7a5634;border-radius:10px;box-shadow:3px 4px 0 rgba(0,0,0,.15)}
@@ -275,6 +275,26 @@ button.chip:hover{border-color:var(--red)}
 .credits li{margin:6px 0;font-size:.9rem}
 
 
+.orders{font-family:var(--type);font-size:.92rem;line-height:1.4;margin:6px 0 0;padding:6px 12px;background:#fffaf0;border:1px solid rgba(90,60,30,.3);border-left:4px double #c4544a;border-radius:4px}
+.reveal-left{display:grid;gap:12px}
+.reveal-left .typed{color:var(--ink);margin:0}
+.reveal-left .typed .tl{display:block;font-family:var(--display);font-weight:700;font-synthesis:none;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:3px}
+.reveal-left.question .find-plate{display:grid;grid-template-columns:min(100%,calc(46vh * 400 / 260));gap:10px}
+.reveal-left.dna .find-plate{grid-template-columns:min(46%,calc(26vh * 400 / 260)) minmax(0,1fr)}
+.reveal-left .find-plate .pit{width:100%;margin:0}
+.gel-wrap{background:#2a1b10;border-radius:10px;padding:8px;border:2px solid #5a3e22}
+.gel-wrap .gel{max-height:34vh;width:auto;max-width:100%;margin:0 auto}
+.gel-note{font-size:.72rem;color:#d9c39a;text-align:center;margin-top:4px}
+.is-reveal .dig-grid .dig-honey{height:112px}
+.is-reveal .dig-grid>.dig-top{grid-template-columns:80px minmax(0,1fr)}
+.is-reveal .bubble{font-size:.9rem;padding:8px 12px;line-height:1.38}
+.is-reveal .feedback{margin-top:4px;font-size:.88rem}
+.is-reveal .fieldcard{padding:12px 16px 14px}
+.is-reveal .q-prompt{font-size:1rem;margin:4px 0 2px}
+.is-reveal .opt{padding:9px 12px 9px 44px;margin:6px 0;font-size:.95rem}
+.is-reveal .parent-pick{margin:6px 0}
+.is-reveal .parent-pick fieldset{padding:6px 10px}
+.is-reveal .pills label{padding:5px 11px}
 /* answer screen: find + images on the left, info on the right */
 .result-left{display:grid;gap:12px;animation:rise .45s ease}
 .find-plate{display:grid;grid-template-columns:min(56%,calc(34vh * 400 / 260)) minmax(0,1fr);gap:12px;align-items:start}
@@ -304,12 +324,62 @@ button.chip:hover{border-color:var(--red)}
 .is-result .bubble{font-size:.93rem;padding:10px 14px}
 .is-result .fieldcard{padding:12px 16px 14px}
 .newbadge{display:inline-block;background:var(--gold);color:var(--ink);border-radius:10px;padding:1px 7px;font-size:.68rem;letter-spacing:.04em;margin-left:4px;vertical-align:1px}
-@media (max-width:900px){.find-plate,.result-left.solo .find-plate{grid-template-columns:1fr}.is-result .card-actions{flex-wrap:wrap}}
+@media (max-width:900px){.find-plate,.result-left.solo .find-plate,.reveal-left.question .find-plate,.reveal-left.dna .find-plate{grid-template-columns:1fr}.is-result .card-actions{flex-wrap:wrap}}
+
+/* compact layouts so every page fits */
+.section-title{font-size:clamp(1.2rem,min(3.4vw,5vh),2.3rem);margin:0 0 8px}
+.guide-row{grid-template-columns:96px minmax(0,1fr);margin:0 0 10px;gap:10px}
+.guide-row .dig-honey{height:min(130px,19vh)}
+.guide-row .bubble{font-size:.92rem;padding:9px 13px;line-height:1.4}
+.side-stack .fieldcard{padding:12px 16px 14px}
+.side-stack .opt,.trial-grid .opt{padding:8px 12px 8px 44px;margin:6px 0;font-size:.94rem}
+.side-stack .q-prompt{font-size:.98rem}
+.tl-top{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(260px,1fr);gap:16px;align-items:center;margin-bottom:6px}
+.tl-top .temple{margin:0}
+.tl-top .temple svg{max-height:min(230px,19vh);width:auto;max-width:100%;margin:0 auto}
+.tl-top .guide-row{margin:0}
+.slots{margin:6px 0}
+.slot{min-height:calc(9vh + 50px);padding:4px}
+.relic-card svg{aspect-ratio:auto;height:9vh;width:100%}
+.relic-card{font-size:.78rem}
+.tray{min-height:calc(9vh + 46px);padding:8px}
+.tl-help{font-family:var(--type);font-size:.82rem;color:#e9d6ad;margin:2px 0 6px}
+#tlPick .card-actions{margin-top:8px}
+.tl-result{max-width:980px;margin:6px auto 0;padding:10px 16px}
+.tl-result .why{font-size:.9rem;margin:4px 0;line-height:1.4}
+.tl-result .result{padding:5px 10px;margin-bottom:4px}
+.tl-result .card-actions{margin-top:8px}
+.trial-grid{display:grid;grid-template-columns:minmax(180px,260px) minmax(0,1fr);gap:18px;align-items:start;max-width:1040px;margin:0 auto}
+.trial-guide{display:grid;gap:10px;justify-items:center}
+.trial-guide .dig-honey{height:min(250px,32vh);width:100%}
+.trial-guide .bubble::before,.trial-guide .bubble::after{display:none}
+.trial-guide .bubble{font-size:.92rem}
+.em-card{margin:0;padding:clamp(12px,2.4vh,24px)}
+.em-statement{margin:10px 0 14px;padding:14px;font-size:clamp(1.05rem,min(2.4vw,3.4vh),1.4rem)}
+.em-fb{margin-top:10px;min-height:0;font-size:.95rem}
+.em-fb .card-actions{margin-top:8px}
+.certificate{max-width:1000px;padding:clamp(14px,2.6vh,30px) clamp(16px,3vw,36px)}
+.cert-title{font-size:clamp(1.4rem,min(4.4vw,6vh),2.6rem);margin:4px 0}
+.cert-line{font-size:.95rem;margin:0}
+.cert-name{font-size:clamp(1.6rem,min(5vw,6.4vh),2.8rem);margin:4px 0}
+.cert-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:center;margin-top:10px;text-align:left}
+.cert-body .cert-score{margin:0;justify-content:flex-start;gap:14px;flex-wrap:nowrap}
+.cert-honey{width:clamp(80px,10vw,120px);height:min(170px,24vh)}
+.seal{width:min(120px,17vh);height:min(120px,17vh);font-size:min(2rem,4.6vh)}
+.cert-rank .rank{font-size:clamp(1rem,2.2vw,1.35rem)}
+.breakdown{margin:0;font-size:.88rem}
+.breakdown td{padding:4px 6px}
+.cert-quote{font-family:var(--hand);font-size:clamp(1.1rem,2.6vh,1.4rem);margin-top:8px;text-align:center}
+.end-actions{margin:12px 0 0}
+.end-actions .btn{min-height:40px;padding-top:8px;padding-bottom:8px}
+.modal-box .discuss{max-width:none;margin:0;padding:0;background:none;box-shadow:none}
+@media (min-width:901px){.map-side{padding:12px 14px}.map-side h3{margin-bottom:6px}.chap-list{gap:5px;margin-bottom:10px}.chap-list li{padding:5px 8px;font-size:.88rem;line-height:1.3}.next-box{padding-top:10px;gap:8px}.next-box p{font-size:.9rem}}
 @media (max-width:900px){
  .title-inner{display:flex;flex-direction:column;align-items:stretch;padding-bottom:0}
  .title-screen .title-honey{position:relative;right:auto;bottom:auto;align-self:center;flex:1 1 0;min-height:110px;height:auto;width:100%;aspect-ratio:auto;margin:4px 0 -2px}
  .howto{grid-template-columns:1fr}
- .map-screen,.dig-grid,.wide-grid{grid-template-columns:minmax(0,1fr)}
+ .map-screen,.dig-grid,.wide-grid,.tl-top,.trial-grid,.cert-body{grid-template-columns:minmax(0,1fr)}
+ .cert-body .cert-score{justify-content:center;flex-wrap:wrap}
  .dig-grid{grid-template-areas:'top' 'pit' 'card'}
  .pit{width:100%}
  .journal{grid-template-columns:1fr}
@@ -342,7 +412,7 @@ button.chip:hover{border-color:var(--red)}
  .em-btns{grid-template-columns:1fr}
 }
 @media (max-height:560px) and (min-width:901px){.howto{display:none}}
-@media (min-width:901px){.map-scroll{background:#e9d2a0}.map-scroll svg{max-height:calc(100vh - 214px);max-height:calc(100dvh - 214px);min-height:300px}.map-wrap{padding:10px 14px 8px}.map-head{margin-bottom:6px}.map-note{margin-top:5px}}
+@media (min-width:901px){.map-scroll{background:#e9d2a0}.map-scroll svg{max-height:calc(100vh - 230px);max-height:calc(100dvh - 230px);min-height:300px}.map-wrap{padding:10px 14px 8px}.map-head{margin-bottom:6px}.map-note{margin-top:5px}}
 @media print{
  body{background:#fff;color:#000}
  #topbar,.end-actions,.discuss,#modal,#fxCanvas{display:none!important}
@@ -1023,7 +1093,7 @@ const Relics = (() => {
     return '<svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' + floor(id) + draw[type](id) + '</svg>';
   }
   // small icon version (for timeline cards)
-  function icon(type) { return '<svg viewBox="40 10 320 240" aria-hidden="true">' + floor('i' + type) + draw[type]('i' + type) + '</svg>'; }
+  function icon(type) { return '<svg viewBox="40 10 320 240" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' + floor('i' + type) + draw[type]('i' + type) + '</svg>'; }
   return { svg, icon };
 })();
 
@@ -1086,7 +1156,7 @@ const sfx = (() => {
   return {
     brush() { const n = performance.now(); if (n - lastBrush < 75) return; lastBrush = n; noise(.07, 'bandpass', 2000 + Math.random() * 2200, 1.1, .045); },
     correct() { brass(392, .13, 0); brass(523, .13, .13); brass(659, .13, .26); brass(784, .5, .39, .1); brass(523, .5, .39, .05); },
-    wrong() { noise(.7, 'lowpass', 170, 1, .4); tone(120, .55, 'sine', .25, 0, 50); },
+    wrong() { tone(330, .16, 'triangle', .06); tone(262, .26, 'triangle', .06, .12); noise(.25, 'lowpass', 300, 1, .08); },
     reveal() { [784, 988, 1175, 1568].forEach((f, i) => tone(f, .35, 'triangle', .05, i * .07)); },
     stamp() { noise(.14, 'lowpass', 500, 1, .5); tone(90, .18, 'sine', .35); },
     page() { noise(.22, 'highpass', 1800, .7, .05); },
@@ -1117,7 +1187,7 @@ const fx = (() => {
   }
   function rockfall() {
     const cols = ['#8a6a48', '#6b4d30', '#a88762', '#5a4028', '#c2a27a'];
-    for (let i = 0; i < 90; i++) parts.push({x: Math.random() * cv.width, y: -20 - Math.random() * 200, vx: (Math.random() - .5) * 1.2, vy: Math.random() * 2, g: .18 + Math.random() * .12, r: Math.random() < .12 ? 4 + Math.random() * 5 : 1 + Math.random() * 2.2, c: cols[i % 5], life: 160});
+    for (let i = 0; i < 26; i++) parts.push({x: Math.random() * cv.width, y: -10 - Math.random() * 120, vx: (Math.random() - .5) * .8, vy: Math.random() * 1.2, g: .09 + Math.random() * .06, r: .8 + Math.random() * 1.6, c: cols[i % 5], life: 120});
     if (!running) { running = true; requestAnimationFrame(loop); }
   }
   function quake() { const app = $('#app'); app.classList.remove('quake'); void app.offsetWidth; app.classList.add('quake'); rockfall(); }
@@ -1221,43 +1291,56 @@ function mapSVG(opts = {}) {
   const grid = [];
   for (let lon = -20; lon <= 140; lon += 20) grid.push(routeD([[lon, -50], [lon, 75]]));
   for (let lat = -40; lat <= 60; lat += 20) grid.push(routeD([[-25, lat], [150, lat]]));
-  const labels = [[-13, 54, 'ATLANTIC'], [16, 50, 'EUROPE'], [15, 10, 'AFRICA'], [106, 58, 'ASIA'], [74, -25, 'INDIAN OCEAN'], [132, -25, 'AUSTRALIA']];
+  const labels = [[-13, 54, 'ATLANTIC'], [22, 59, 'EUROPE'], [15, 10, 'AFRICA'], [106, 58, 'ASIA'], [74, -25, 'INDIAN OCEAN'], [132, -25, 'AUSTRALIA']];
   let s = '<svg viewBox="0 0 800 465" id="' + (opts.id || 'worldMap') + '" role="img" aria-label="Expedition map of Africa, Europe and Asia">' +
     '<defs><pattern id="sea" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M0 5 Q 2.5 3 5 5 T 10 5" fill="none" stroke="#9c8158" stroke-width=".6" opacity=".5"/></pattern>' +
     '<radialGradient id="parch" cx="50%" cy="45%" r="75%"><stop offset="0" stop-color="#f5e6c3"/><stop offset=".7" stop-color="#e9d2a0"/><stop offset="1" stop-color="#cdae74"/></radialGradient>' +
     '<filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".04" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="1.6"/></filter>' +
+    '<filter id="lblBg" x="-10%" y="-40%" width="120%" height="180%"><feMorphology operator="dilate" radius="4.6" in="SourceAlpha" result="d"/><feFlood flood-color="#efdcae" flood-opacity=".94"/><feComposite in2="d" operator="in" result="bg"/><feMerge><feMergeNode in="bg"/><feMergeNode in="SourceGraphic"/></feMerge></filter>' +
     '<marker id="arrowR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="context-stroke"/></marker></defs>' +
     '<rect width="800" height="465" fill="url(#parch)"/><rect width="800" height="465" fill="url(#sea)"/>' +
     '<path d="' + grid.join(' ') + '" stroke="#8a6a40" stroke-width=".6" stroke-dasharray="2 4" fill="none" opacity=".7"/>' +
     '<g filter="url(#rough)"><path d="' + LAND + '" fill="#dcc08a" fill-rule="evenodd" stroke="#5a3e22" stroke-width="1.1"/></g>' +
-    labels.map(([lon, lat, l]) => { const [x, y] = xy(lon, lat); return '<text x="' + x + '" y="' + y + '" fill="#6b4a2b" font-family="Georgia,serif" font-style="italic" font-size="13" text-anchor="middle" letter-spacing="3">' + l + '</text>'; }).join('') +
+
     // compass rose
     '<g transform="translate(62 398)" opacity=".85"><circle r="26" fill="#f3e3bd" stroke="#5a3e22" stroke-width="1.2"/><circle r="20" fill="none" stroke="#5a3e22" stroke-width=".6"/><path d="M0 -30 L5 0 L0 30 L-5 0 Z" fill="#5a3e22"/><path d="M-30 0 L0 5 L30 0 L0 -5 Z" fill="#a8885a"/><path d="M0 -30 L5 0 L-5 0 Z" fill="#b3261e"/><text y="-34" text-anchor="middle" font-family="Georgia,serif" font-size="11" font-weight="700" fill="#5a3e22">N</text></g>' +
     // cartouche
     '<g transform="translate(664 432)"><path d="M -104 -18 L 104 -18 L 112 0 L 104 18 L -104 18 L -112 0 Z" fill="#f3e3bd" stroke="#5a3e22" stroke-width="1.2"/><text text-anchor="middle" y="-2" font-family="Georgia,serif" font-size="10.5" letter-spacing="2" fill="#5a3e22">PROF HONEY’S EXPEDITION</text><text text-anchor="middle" y="11" font-family="Georgia,serif" font-style="italic" font-size="9" fill="#6b4a2b">Hominin finds of Africa, Europe &amp; Asia</text></g>' +
-    '<g id="' + (opts.id || 'worldMap') + '-routes"></g><g id="' + (opts.id || 'worldMap') + '-trail"></g><g id="' + (opts.id || 'worldMap') + '-pins"></g><g id="' + (opts.id || 'worldMap') + '-fly"></g></svg>';
+    '<g id="' + (opts.id || 'worldMap') + '-routes"></g><g id="' + (opts.id || 'worldMap') + '-trail"></g>' +
+    '<g class="region-labels">' + labels.map(([lon, lat, l]) => { const [x, y] = xy(lon, lat); return '<text x="' + x + '" y="' + y + '" fill="#6b4a2b" filter="url(#lblBg)" font-family="Georgia,serif" font-style="italic" font-size="13" text-anchor="middle" letter-spacing="3">' + l + '</text>'; }).join('') + '</g>' +
+    '<g id="' + (opts.id || 'worldMap') + '-pins"></g><g id="' + (opts.id || 'worldMap') + '-fly"></g></svg>';
   return s;
 }
 function trailD(ids) {
   let d = '';
-  for (let i = 1; i < ids.length; i++) d += ' ' + arcPath(xy(S[ids[i - 1]].lon, S[ids[i - 1]].lat), xy(S[ids[i]].lon, S[ids[i]].lat));
+  for (let i = 1; i < ids.length; i++) d += ' ' + arcPath(pinXY(ids[i - 1]), pinXY(ids[i]), .12);
   return d;
 }
-const LABEL_POS = {laetoli:['end', -9, 14], olduvai:['start', 10, 5], koobi:['start', 10, -2], ngandong:['end', -9, 15], neandertal:['start', 8, 15], shanidar:['start', 9, 13], dmanisi:['start', 9, -8]};
+const LABEL_POS = {
+  // [anchor, dx, dy, leaderTo] — East African sites get callouts out over the ocean so they don't pile up
+  hadar:['start', 0, 0, [362, 230]], koobi:['start', 0, 0, [362, 252]], olduvai:['start', 0, 0, [362, 280]], laetoli:['start', 0, 0, [362, 304]],
+  ngandong:['end', -10, 16], neandertal:['start', 8, 17], shanidar:['start', 10, 13], dmanisi:['start', 9, -9]
+};
 function drawPins(svgId, opts = {}) {
   const g = $('#' + svgId + '-pins'); if (!g) return;
-  const offsets = {laetoli:[-9, 9], olduvai:[9, -2], koobi:[8, -6], denisova:[0, 0], dmanisi:[-2, -6], shanidar:[4, 6]};
   const nextId = opts.next;
   const list = opts.only ? SITES.filter(s => opts.only.includes(s.id)) : SITES;
+  const txt = (x, y, anchor, t, size, style) => '<text x="' + x + '" y="' + y + '" text-anchor="' + anchor + '" font-family="Special Elite,Courier New,monospace" font-size="' + (size || 11.5) + '" fill="#2a1b10" filter="url(#lblBg)"' + (style || '') + '>' + t + '</text>';
+  const label = (s, x, y) => {
+    const lp = LABEL_POS[s.id] || ['start', 9, -8];
+    if (lp[3]) {
+      const [lx, ly] = lp[3];
+      return '<path d="M' + (x + 7) + ' ' + y + ' L' + (lx - 26) + ' ' + ly + ' L' + (lx - 4) + ' ' + ly + '" fill="none" stroke="#5a3e22" stroke-width="1" opacity=".75"/>' + txt(lx, ly + 4, 'start', esc(s.name));
+    }
+    return txt(x + lp[1], y + lp[2], lp[0], esc(s.name));
+  };
   g.innerHTML = list.map(s => {
-    let [x, y] = xy(s.lon, s.lat); const o = offsets[s.id] || [0, 0]; x += o[0]; y += o[1];
+    const [x, y] = pinXY(s.id);
     const done = state.visited.includes(s.id), next = s.id === nextId;
-    const lp = opts.only ? ['start', 9, -7] : (LABEL_POS[s.id] || ['start', 9, -7]);
-    const lab = '<text x="' + (x + lp[1]) + '" y="' + (y + lp[2]) + '" text-anchor="' + lp[0] + '" font-family="Special Elite,Courier New,monospace" font-size="11.5" fill="#2a1b10" stroke="#f5e6c3" stroke-width="3" paint-order="stroke">' + esc(s.name) + '</text>';
-    if (opts.only) return '<g class="site-pin pin-next" data-site="' + s.id + '" tabindex="0" role="button" aria-label="' + esc(s.name + ', ' + s.place + ', ' + s.age) + '"><circle class="pin-ring" cx="' + x + '" cy="' + y + '" r="9" fill="none" stroke="#b3261e" stroke-width="2"/><circle cx="' + x + '" cy="' + y + '" r="12" fill="transparent"/><circle cx="' + x + '" cy="' + y + '" r="6.5" fill="#e0a73a" stroke="#2a1b10" stroke-width="2"/>' + lab + '<text x="' + (x + 9) + '" y="' + (y + 8) + '" font-family="Georgia,serif" font-style="italic" font-size="10" fill="#5a3e22" stroke="#f5e6c3" stroke-width="3" paint-order="stroke">' + esc(s.age) + '</text></g>';
-    if (done) return '<g class="site-pin" data-site="' + s.id + '" tabindex="0" role="button" aria-label="' + esc(s.name + ' — excavated. Open journal') + '"><circle cx="' + x + '" cy="' + y + '" r="11" fill="transparent"/><path d="M' + (x - 5) + ' ' + (y - 5) + ' L' + (x + 5) + ' ' + (y + 5) + ' M' + (x + 5) + ' ' + (y - 5) + ' L' + (x - 5) + ' ' + (y + 5) + '" stroke="#b3261e" stroke-width="3.2" stroke-linecap="round"/>' + lab + '</g>';
-    if (next) return '<g class="pin-next" data-next="' + s.id + '"><circle class="pin-ring" cx="' + x + '" cy="' + y + '" r="8" fill="none" stroke="#b3261e" stroke-width="2.2"/><circle cx="' + x + '" cy="' + y + '" r="6" fill="#e0a73a" stroke="#2a1b10" stroke-width="2"/>' + lab + '</g>';
-    return '<circle cx="' + x + '" cy="' + y + '" r="3.6" fill="none" stroke="#6b4a2b" stroke-width="1.4" opacity=".55"/>';
+    if (opts.only) return '<g class="site-pin pin-next" data-site="' + s.id + '" tabindex="0" role="button" aria-label="' + esc(s.name + ', ' + s.place + ', ' + s.age) + '"><circle class="pin-ring" cx="' + x + '" cy="' + y + '" r="9" fill="none" stroke="#b3261e" stroke-width="2"/><circle cx="' + x + '" cy="' + y + '" r="12" fill="transparent"/><circle cx="' + x + '" cy="' + y + '" r="6.5" fill="#e0a73a" stroke="#2a1b10" stroke-width="2"/>' + txt(x + 9, y - 7, 'start', esc(s.name)) + txt(x + 9, y + 8, 'start', esc(s.age), 10, ' font-style="italic" font-family="Georgia,serif"') + '</g>';
+    if (done) { const n = SITES.indexOf(s) + 1; return '<g class="site-pin" data-site="' + s.id + '" tabindex="0" role="button" aria-label="' + esc('Dig ' + n + ': ' + s.name + '. Open journal') + '"><circle cx="' + x + '" cy="' + y + '" r="11" fill="transparent"/><circle cx="' + x + '" cy="' + y + '" r="7.5" fill="#b3261e" stroke="#2a1b10" stroke-width="1.5"/><text x="' + x + '" y="' + (y + 3.2) + '" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="' + (n > 9 ? 8 : 9.5) + '" fill="#fff4dc">' + n + '</text>' + label(s, x, y) + '</g>'; }
+    if (next) return '<g class="pin-next" data-next="' + s.id + '"><circle class="pin-ring" cx="' + x + '" cy="' + y + '" r="8" fill="none" stroke="#b3261e" stroke-width="2.2"/><circle cx="' + x + '" cy="' + y + '" r="6" fill="#e0a73a" stroke="#2a1b10" stroke-width="2"/>' + label(s, x, y) + '</g>';
+    return '<circle cx="' + x + '" cy="' + y + '" r="3.4" fill="none" stroke="#6b4a2b" stroke-width="1.3" opacity=".5"/>';
   }).join('');
 }
 function pinXY(id) { const s = S[id]; const offsets = {laetoli:[-9, 9], olduvai:[9, -2], koobi:[8, -6], dmanisi:[-2, -6], shanidar:[4, 6]}; const [x, y] = xy(s.lon, s.lat); const o = offsets[id] || [0, 0]; return [x + o[0], y + o[1]]; }
@@ -1277,9 +1360,15 @@ function showMap(opts = {}) {
     return '<li class="' + (cur ? 'cur' : past ? '' : 'locked') + '"><span class="cn">' + c.num + '</span><span>' + c.title + '<br><span class="cs">' + (i < 4 ? done + ' / ' + sitesIn.length + ' sites' : 'Final trial') + '</span></span><span>' + (past ? '✔' : cur ? '➤' : '') + '</span></li>';
   }).join('');
   setScreen('<section class="map-screen"><div class="map-wrap paper"><div class="map-head"><h2>Expedition Map</h2><span>' + doneCount + ' of ' + SITES.length + ' sites excavated</span></div>' +
-    '<div class="map-scroll" id="mapScroll">' + mapSVG() + '</div><p class="map-note">Modern coastlines for orientation. Pins mark approximate find locations; dates are approximate. Tap an excavated site (✕) to open its journal entry.</p></div>' +
+    '<div class="map-scroll" id="mapScroll">' + mapSVG() + '</div><p class="map-note">Modern coastlines for orientation. Pins mark approximate find locations; dates are approximate. Numbered pins show the order of your digs. Tap one to open its journal entry.</p></div>' +
     '<aside class="map-side paper"><h3>Expedition log</h3><ol class="chap-list">' + chs + '</ol><div class="next-box" id="nextBox"></div><div class="stats"><span>Score: ' + points() + ' / ' + MAX_POINTS + '</span><span>' + Math.round(points() / MAX_POINTS * 100) + '%</span></div></aside></section>');
-  $('#worldMap-trail').innerHTML = '<path d="' + trailD(state.visited) + '" fill="none" stroke="#b3261e" stroke-width="2.6" stroke-dasharray="7 5" stroke-linecap="round"/>';
+  // route: thin near each pin, full weight in open space; brown ink so it reads apart from the red pins
+  const td = trailD(state.visited);
+  $('#worldMap-trail').innerHTML = '<defs><radialGradient id="pinFade"><stop offset="0" stop-color="#000"/><stop offset=".5" stop-color="#000"/><stop offset="1" stop-color="#fff"/></radialGradient>' +
+    '<mask id="trailMask" maskUnits="userSpaceOnUse" x="0" y="0" width="800" height="465"><rect width="800" height="465" fill="#fff"/>' +
+    state.visited.map(id => { const [x, y] = pinXY(id); return '<circle cx="' + x + '" cy="' + y + '" r="30" fill="url(#pinFade)"/>'; }).join('') + '</mask></defs>' +
+    '<path d="' + td + '" fill="none" stroke="#5a3a22" stroke-width="1" stroke-dasharray="3 4" stroke-linecap="round" opacity=".75"/>' +
+    '<path d="' + td + '" fill="none" stroke="#5a3a22" stroke-width="2.4" stroke-dasharray="6 5" stroke-linecap="round" opacity=".8" mask="url(#trailMask)"/>';
   drawPins('worldMap', {next: nextSite});
   $('#worldMap-pins').addEventListener('click', e => { const p = e.target.closest('[data-site]'); if (p) openJournal(S[p.dataset.site].g); });
   $('#worldMap-pins').addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.dataset.site) { e.preventDefault(); openJournal(S[e.target.dataset.site].g); } });
@@ -1297,7 +1386,7 @@ function showMap(opts = {}) {
 function travel(id) {
   const from = state.lastSite ? pinXY(state.lastSite) : [4, 250];
   const to = pinXY(id);
-  const d = arcPath(from, to, .22);
+  const d = arcPath(from, to, .14);
   const fly = $('#worldMap-fly');
   fly.innerHTML = '<defs><mask id="flyMask" maskUnits="userSpaceOnUse" x="0" y="0" width="800" height="465"><path id="flyMaskPath" d="' + d + '" stroke="#fff" stroke-width="10" fill="none"/></mask></defs><path id="flyPath" d="' + d + '" fill="none" stroke="#b3261e" stroke-width="2.8" stroke-dasharray="7 5" stroke-linecap="round" mask="url(#flyMask)"/>' + PLANE;
   const path = $('#flyPath'), mp = $('#flyMaskPath'), plane = fly.querySelector('.plane');
@@ -1418,7 +1507,7 @@ function showDig(id) {
     '<div class="pit" id="pit"><div class="pit-art">' + Relics.svg(s.relic, s.id) + '</div><canvas class="dirt" aria-label="Dirt covering the find. Drag to brush it away, or use the trowel button."></canvas><canvas class="dust"></canvas><div class="pit-hint">Drag to brush away the dirt</div><div class="stamp" id="stamp"></div></div>' +
     '<div class="pit-tools"><div class="meter" role="progressbar" aria-label="Excavation progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="meterFill"></div></div><span id="digPct">0% excavated</span><button class="btn small alt" id="trowelBtn">Use the trowel</button></div></div>' +
     '<div class="card-col"><div class="fieldcard paper" id="fieldCard"><div class="label">Field orders <span>' + esc(s.tag) + '</span></div>' + photo +
-    '<p class="typed">Site: ' + esc(s.name) + ', ' + esc(s.place) + '.<br>Brush away the sediment to expose the find. Careful — the evidence is fragile.</p></div></div></div></section>');
+    '<p class="orders">Brush away the sediment to expose the find. Careful — the evidence is fragile.</p></div></div></div></section>');
   Honey.mount($('#digHoney'), {pose:'brush', dur:1.7});
   bubble($('#digBubble'), esc(s.intro));
   const pit = $('#pit');
@@ -1450,7 +1539,7 @@ function mcq({container, q, item, max = 10, onWrong, onDone}) {
         award(item, 0); fb.className = 'feedback bad'; fb.textContent = 'The answer is marked in green.'; say('Not quite. The correct answer is ' + q.o[q.a]);
         setTimeout(() => onDone(state.scores[item], tries), 900);
       } else {
-        fb.className = 'feedback bad'; fb.textContent = 'Rocks are rumbling! That’s not what the evidence says. Try again for half points.'; say('Not quite. Try again.');
+        fb.className = 'feedback bad'; fb.textContent = 'Not quite — try again for half points.'; say('Not quite. Try again.');
         if (onWrong) onWrong(tries);
       }
     }
@@ -1461,13 +1550,26 @@ function resultLine(pts, max) {
   if (pts > 0) return '<div class="result half">+' + pts + ' points · second try</div>';
   return '<div class="result zero">0 points · logged for the record</div>';
 }
+function stageLeft(mode, beside, below) {
+  const col = $('.pit-col'), pit = $('#pit');
+  const wrap = document.createElement('div');
+  wrap.className = 'reveal-left ' + mode;
+  wrap.innerHTML = '<div class="find-plate"></div>' + (below || '');
+  wrap.querySelector('.find-plate').appendChild(pit);
+  if (beside) wrap.querySelector('.find-plate').insertAdjacentHTML('beforeend', beside);
+  const old = col.querySelector('.reveal-left'); if (old) old.remove();
+  const tools = $('.pit-tools'); if (tools) tools.remove();
+  col.appendChild(wrap);
+  $('.dig-screen').classList.add('is-reveal');
+}
 function askSite(s) {
   const card = $('#fieldCard');
-  card.innerHTML = '<div class="label">Field note <span>' + esc(s.tag) + ' · ' + esc(s.age) + '</span></div><p class="typed">' + esc(s.clue) + '</p>' +
+  stageLeft('question', '<p class="typed"><b class="tl">Field note · ' + esc(s.tag) + ' · ' + esc(s.age) + '</b>' + esc(s.clue) + '</p>');
+  card.innerHTML = '<div class="label">Your question <span>' + esc(s.name) + '</span></div>' +
     (s.q.almanac ? '<div class="q-row"><button class="chip" id="almBtn">' + ICON.clock.replace('<svg', '<svg width="16" height="16"') + ' Consult the Almanac</button></div>' : '') + '<div id="qBox"></div>';
   if ($('#almBtn')) $('#almBtn').onclick = () => openAlmanac(s.ageK, s.name);
   mcq({container: $('#qBox'), q: s.q, item: s.id,
-    onWrong: () => { Honey.mount($('#digHoney'), {pose:'oops', mouth:'o', brow:'up', dur:.75}); bubble($('#digBubble'), 'Whoa — careful! ' + (s.q.almanac ? 'Check the dates in the Almanac, then try again.' : 'Reread the field note. What does the evidence actually show?')); },
+    onWrong: () => { Honey.mount($('#digHoney'), {pose:'point', mouth:'smirk', dur:.75}); bubble($('#digBubble'), s.q.almanac ? 'Close! Check the dates in the Almanac, then try again.' : 'Close! Reread the field note: what does the evidence actually show?'); },
     onDone: pts => siteDone(s, pts)});
 }
 function siteDone(s, pts) {
@@ -1490,8 +1592,9 @@ function siteDone(s, pts) {
   fp.appendChild($('#pit'));
   fp.insertAdjacentHTML('beforeend', '<div class="atlas"><b>Atlas record · ' + esc(s.name) + ', ' + esc(s.place) + '</b><span class="age">' + esc(s.age) + '</span><p>' + esc(s.evidence) + link + '</p></div>');
   const tools = $('.pit-tools'); if (tools) tools.remove();
+  const staged = $('.reveal-left'); if (staged) staged.remove();
   $('.pit-col').appendChild(left);
-  $('.dig-screen').classList.add('is-result');
+  $('.dig-screen').classList.remove('is-reveal'); $('.dig-screen').classList.add('is-result');
   // Right: a compact recap of the question, the score, the explanation and what's next
   const dna = s.dna ? '<span class="qd-q">DNA lab: who were Denny’s parents?</span><span class="qd-a">✓ Neanderthal mother · Denisovan father</span>' : '';
   $('#fieldCard').innerHTML = '<div class="q-done">' + dna +
@@ -1518,8 +1621,8 @@ function gelSVG(showKids) {
 function dnaLab(s) {
   const card = $('#fieldCard');
   bubble($('#digBubble'), 'Into the lab! Denny’s DNA carries one copy from each parent. Line up the bands with the reference samples.');
-  card.innerHTML = '<div class="label">DNA lab <span>Denisova 11 · “Denny”</span></div><p class="typed">' + esc(s.clue) + '</p>' + gelSVG() +
-    '<p style="font-size:.78rem;color:#5a4430;text-align:center;margin-top:-2px">Stylized comparison for this game — not real sequence data.</p>' +
+  stageLeft('dna', '<p class="typed"><b class="tl">DNA lab · Denisova 11</b>' + esc(s.clue) + '</p>', '<div class="gel-wrap">' + gelSVG() + '<p class="gel-note">Stylized comparison for this game — not real sequence data.</p></div>');
+  card.innerHTML = '<div class="label">DNA lab <span>Match Denny’s lanes to the references</span></div>' +
     '<div class="parent-pick">' + ['Mother', 'Father'].map(p => '<fieldset><legend>Denny’s ' + p.toLowerCase() + '</legend><div class="pills">' + [['neander', 'Neanderthal'], ['den', 'Denisovan'], ['sapiens', 'Homo sapiens']].map(([v, l]) => '<label><input type="radio" name="p' + p + '" value="' + v + '"> ' + l + '</label>').join('') + '</div></fieldset>').join('') + '</div>' +
     '<button class="btn" id="runDNA" disabled>Run the analysis</button><div class="feedback" id="dnaFb" aria-live="polite"></div>';
   let tries = 0;
@@ -1532,20 +1635,20 @@ function dnaLab(s) {
       dnaDone(s, pts);
     } else {
       tries++; sfx.wrong(); fx.quake();
-      Honey.mount($('#digHoney'), {pose:'oops', mouth:'o', brow:'up', dur:.75});
+      Honey.mount($('#digHoney'), {pose:'point', mouth:'smirk', dur:.75});
       if (tries >= 2) { award('denny-dna', 0); dnaDone(s, 0); }
-      else { $('#dnaFb').className = 'feedback bad'; $('#dnaFb').textContent = 'The bands don’t line up. Compare each of Denny’s lanes with the three reference lanes — then try again for half points.'; bubble($('#digBubble'), 'Steady hands! Each band in a parent’s lane should match a reference lane exactly.'); }
+      else { $('#dnaFb').className = 'feedback bad'; $('#dnaFb').textContent = 'The bands don’t line up. Try again for half points.'; bubble($('#digBubble'), 'Steady hands! Each parent’s bands should match one reference lane exactly.'); }
     }
   };
 }
 function dnaDone(s, pts) {
   const card = $('#fieldCard');
   Honey.mount($('#digHoney'), {pose: pts ? 'tip' : 'idle', mouth: pts ? 'grin' : 'smirk', dur:1});
-  card.innerHTML = '<div class="label">DNA lab · result <span>Denisova 11</span></div>' + resultLine(pts, 10) +
-    '<p class="typed">Mother: <b>Neanderthal</b>. Father: <b>Denisovan</b>.<br>Denny is the child of two different kinds of humans — direct evidence of an encounter.</p><div id="qBox"></div>';
+  card.innerHTML = '<div class="label">DNA lab · result <span>' + (pts === 10 ? '+10 points · first try' : pts ? '+5 points · second try' : '0 points') + '</span></div>' +
+    '<div class="q-done"><span class="qd-a">✓ Mother: Neanderthal · Father: Denisovan</span><span class="qd-q">Direct evidence of an encounter between two kinds of humans.</span></div><div id="qBox"></div>';
   bubble($('#digBubble'), 'A Neanderthal mother and a Denisovan father! Now — the professor’s favorite question: what DOESN’T the DNA tell us?');
   mcq({container: $('#qBox'), q: s.q, item: s.id,
-    onWrong: () => { Honey.mount($('#digHoney'), {pose:'oops', mouth:'o', brow:'up', dur:.75}); bubble($('#digBubble'), 'Careful! The DNA answered that one already. What would you need a time machine to know?'); },
+    onWrong: () => { Honey.mount($('#digHoney'), {pose:'point', mouth:'smirk', dur:.75}); bubble($('#digBubble'), 'The DNA already answered that. What would you need a time machine to know?'); },
     onDone: p => siteDone(s, p)});
 }
 
@@ -1553,8 +1656,8 @@ function dnaDone(s, pts) {
 function showMapRoom() {
   showTop(true);
   const ids = ['koobi', 'dmanisi', 'ngandong'];
-  setScreen('<h2 class="section-title">The Map Room · Trace the Long Road</h2><div class="wide-grid"><div class="paper" style="padding:12px"><div class="map-scroll" id="mrScroll">' + mapSVG({id:'mrMap'}) + '</div><p class="map-note">Dashed arrows show broad directions inferred from the evidence.</p></div>' +
-    '<div><div class="dig-top" style="grid-template-columns:110px 1fr"><div class="dig-honey" id="mrHoney" style="height:150px"></div><div class="bubble" id="mrBubble"></div></div><div class="fieldcard paper" id="mrCard"></div></div></div>');
+  setScreen('<h2 class="section-title">The Map Room · Trace the Long Road</h2><div class="wide-grid"><div class="paper" style="padding:12px"><div class="map-scroll" id="mrScroll">' + mapSVG({id:'mrMap'}) + '</div><p class="map-note" id="mrNote">Dashed arrows show broad directions inferred from the evidence.</p></div>' +
+    '<div class="side-stack"><div class="dig-top guide-row"><div class="dig-honey" id="mrHoney"></div><div class="bubble" id="mrBubble"></div></div><div class="fieldcard paper" id="mrCard"></div></div></div>');
   Honey.mount($('#mrHoney'), {pose:'point', dur:1.5});
   bubble($('#mrBubble'), 'Three finds, one traveler. Before we draw any arrows, let’s be clear about what the pins actually prove.');
   drawPins('mrMap', {only: ids});
@@ -1571,7 +1674,7 @@ function showMapRoom() {
       mapRoomRoutes(pts);
     } else {
       tries++; b.classList.add('wrong'); b.disabled = true; sfx.wrong(); fx.quake();
-      Honey.mount($('#mrHoney'), {pose:'oops', mouth:'o', brow:'up', dur:.75});
+      Honey.mount($('#mrHoney'), {pose:'point', mouth:'smirk', dur:.75});
       if (tries >= 2) { over = true; card.querySelector('.opt[data-site="dmanisi"]').classList.add('right'); $$('.opt', card).forEach(o => o.disabled = true); award('maproom-1', 0); setTimeout(() => mapRoomRoutes(0), 900); }
       else { $('#mrFb').className = 'feedback bad'; $('#mrFb').textContent = 'That one’s in Africa or far too young. Look for a site outside Africa that’s about 1.85 million years old.'; bubble($('#mrBubble'), 'Check the continent AND the date!'); }
     }
@@ -1587,17 +1690,18 @@ function mapRoomRoutes(pts1) {
   Honey.mount($('#mrHoney'), {pose:'tip', mouth:'grin', dur:1});
   bubble($('#mrBubble'), 'Dmanisi! Early Homo outside Africa by about 1.85 million years ago. Now watch the arrows appear… and think about what they DON’T show.');
   const card = $('#mrCard');
-  card.innerHTML = '<div class="label">Question 2 of 2 <span>Read the arrows</span></div>' + resultLine(pts1, 10).replace('class="result', 'style="font-size:.9rem" class="result') + '<div id="mrQ2"></div>';
+  card.innerHTML = '<div class="label">Question 2 of 2 <span>Question 1: ' + (pts1 === 10 ? '+10 points' : pts1 ? '+5 points' : '0 points') + '</span></div><div id="mrQ2"></div>';
   mcq({container: $('#mrQ2'), q: MAPROOM.q2, item: 'maproom-2',
-    onWrong: () => { Honey.mount($('#mrHoney'), {pose:'oops', mouth:'o', brow:'up', dur:.75}); bubble($('#mrBubble'), 'The pins prove those things. What about the empty space between them?'); },
+    onWrong: () => { Honey.mount($('#mrHoney'), {pose:'point', mouth:'smirk', dur:.75}); bubble($('#mrBubble'), 'The pins prove those things. What about the empty space between them?'); },
     onDone: pts => {
       completeStep();
       Honey.mount($('#mrHoney'), {pose: pts ? 'tip' : 'idle', mouth: pts ? 'grin' : 'smirk', dur:1});
       bubble($('#mrBubble'), '<b>Field Tip:</b> An arrow on a map is an argument, not a photograph.', 'Prof Honey’s Field Tip');
-      const box = document.createElement('div');
-      box.innerHTML = resultLine(pts, 10) + '<p class="why">' + esc(MAPROOM.q2.why) + '</p>' + ROUTES.filter(r => r[0] === 'erectus').map(r => '<div class="atlas"><b>' + esc(r[2]) + '</b><p>' + esc(r[3]) + '</p></div>').join('') +
+      $('#mrCard').innerHTML = '<div class="q-done"><span class="qd-q">' + esc(MAPROOM.q1.prompt.replace('Tap the pin: ', '')) + '</span><span class="qd-a">✓ Dmanisi, Georgia</span><span class="qd-q" style="margin-top:4px">' + esc(MAPROOM.q2.prompt) + '</span><span class="qd-a">✓ ' + esc(MAPROOM.q2.o[MAPROOM.q2.a]) + '</span></div>' +
+        resultLine(pts, 10) + '<p class="why">' + esc(MAPROOM.q2.why) + '</p>' +
         '<div class="card-actions"><button class="btn" id="onward">' + nextLabel() + '</button></div>';
-      $('#mrQ2').appendChild(box); $('#onward').onclick = go;
+      $('#mrNote').innerHTML = ROUTES.filter(r => r[0] === 'erectus').map(r => '<b>' + esc(r[2]) + ':</b> ' + esc(r[3])).join(' ');
+      $('#onward').onclick = go;
     }});
 }
 
@@ -1616,10 +1720,10 @@ function showTimeline() {
   showTop(true);
   const placed = [null, null, null, null, null];
   let tray = shuffle(TIMELINE.map(t => t.id));
-  setScreen('<h2 class="section-title">The Final Trial · Door One</h2><div class="dig-top" style="max-width:900px"><div class="dig-honey" id="tlHoney"></div><div class="bubble" id="tlBubble"></div></div>' +
-    '<div class="temple" id="temple">' + TEMPLE + '</div><div class="tl-labels"><span>◀ Oldest</span><span>Youngest ▶</span></div><div class="slots" id="slots"></div>' +
-    '<p style="font-family:var(--type);font-size:.85rem;color:#e9d6ad;margin:4px 0">Tap a relic to place it in the next open slot. Tap a placed relic to send it back.</p><div class="tray" id="tray"></div>' +
-    '<div class="card-actions" style="justify-content:center"><button class="btn" id="tlCheck" disabled style="flex:0 1 320px">Open the door</button></div><div id="tlResult"></div>');
+  setScreen('<h2 class="section-title">The Final Trial · Door One</h2><div class="tl-top"><div class="temple" id="temple">' + TEMPLE + '</div><div class="dig-top guide-row"><div class="dig-honey" id="tlHoney"></div><div class="bubble" id="tlBubble"></div></div></div>' +
+    '<div class="tl-labels"><span>◀ Oldest</span><span>Youngest ▶</span></div><div class="slots" id="slots"></div>' +
+    '<div id="tlPick"><p class="tl-help">Tap a relic to place it in the next open slot. Tap a placed relic to send it back.</p><div class="tray" id="tray"></div>' +
+    '<div class="card-actions" style="justify-content:center"><button class="btn" id="tlCheck" disabled style="flex:0 1 320px">Open the door</button></div></div><div id="tlResult"></div>');
   Honey.mount($('#tlHoney'), {pose:'point', dur:1.6});
   bubble($('#tlBubble'), 'Legend says this door opens only for those who know their deep time. Arrange the relics from OLDEST to YOUNGEST.');
   const T = Object.fromEntries(TIMELINE.map(t => [t.id, t]));
@@ -1634,7 +1738,7 @@ function showTimeline() {
   $('#tray').onclick = e => { const b = e.target.closest('[data-id]'); if (!b || checked) return; const i = placed.indexOf(null); if (i < 0) return; placed[i] = b.dataset.id; tray = tray.filter(x => x !== b.dataset.id); sfx.click(); render(); };
   $('#slots').onclick = e => { const b = e.target.closest('[data-id]'); if (!b || checked) return; const i = placed.indexOf(b.dataset.id); placed[i] = null; tray.push(b.dataset.id); sfx.click(); render(); };
   $('#tlCheck').onclick = () => {
-    checked = true; $('#tlCheck').parentElement.hidden = true;
+    checked = true; $('#tlPick').hidden = true;
     const correct = TIMELINE.map(t => t.id);
     let ok = 0; placed.forEach((id, i) => { if (id === correct[i]) ok++; });
     const pts = award('timeline', ok * 2);
@@ -1643,12 +1747,11 @@ function showTimeline() {
     const all = ok === 5;
     if (all) sfx.correct(); else { sfx.wrong(); fx.quake(); }
     setTimeout(() => { $('#temple').classList.add('open'); sfx.stamp(); }, all ? 400 : 1400);
-    Honey.mount($('#tlHoney'), all ? {pose:'tip', mouth:'grin', dur:1} : {pose:'oops', mouth:'o', brow:'up', dur:1});
+    Honey.mount($('#tlHoney'), all ? {pose:'tip', mouth:'grin', dur:1} : {pose:'point', mouth:'smirk', dur:1});
     bubble($('#tlBubble'), all ? 'Perfect order — the door is opening! You know your deep time.' : ok + ' of 5 in the right place. The door grinds open anyway… but study the correct order below!');
     completeStep();
-    $('#tlResult').innerHTML = '<div class="fieldcard paper" style="max-width:760px;margin:16px auto 0"><div class="result' + (all ? '' : ok ? ' half' : ' zero') + '">+' + pts + ' points · ' + ok + ' of 5 placed correctly</div>' +
-      '<p class="q-prompt">The correct order</p><ol>' + TIMELINE.map(t => '<li><b>' + esc(t.label) + '</b> — ' + esc(t.age) + '</li>').join('') + '</ol>' +
-      '<p class="why">More than 3.6 million years separate the oldest find from the youngest. Notice how the later finds crowd together: the last 300,000 years are a tiny slice of the hominin story.</p>' +
+    $('#tlResult').innerHTML = '<div class="fieldcard paper tl-result"><div class="result' + (all ? '' : ok ? ' half' : ' zero') + '">+' + pts + ' points · ' + ok + ' of 5 placed correctly</div>' +
+      '<p class="why"><b>Correct order:</b> ' + TIMELINE.map(t => esc(t.label.replace(/ (footprints|stone tools|flints|bones|skeleton \(LB1\))$/, '')) + ' <i>(' + esc(t.age.replace('About ', '~').replace(' years ago', '')) + ')</i>').join(' → ') + '. The later finds crowd together: the last 300,000 years are a thin slice of the hominin story.</p>' +
       '<div class="card-actions"><button class="btn" id="onward">' + nextLabel() + '</button></div></div>';
     $('#onward').onclick = go;
   };
@@ -1659,7 +1762,7 @@ function showEvidence() {
   showTop(true);
   let i = 0;
   while (i < EVIDENCE.length && ('em-' + i) in state.scores) i++;
-  setScreen('<h2 class="section-title">The Final Trial · Door Two</h2><div class="dig-top" style="max-width:900px"><div class="dig-honey" id="emHoney"></div><div class="bubble" id="emBubble"></div></div><div class="em-card paper" id="emCard"></div>');
+  setScreen('<h2 class="section-title">The Final Trial · Door Two</h2><div class="trial-grid"><div class="trial-guide"><div class="dig-honey" id="emHoney"></div><div class="bubble" id="emBubble"></div></div><div class="em-card paper" id="emCard"></div></div>');
   Honey.mount($('#emHoney'), {pose:'brush', dur:1.6});
   bubble($('#emBubble'), 'The last door has a riddle carved on it: can you tell what the evidence SHOWS from what is still a MYSTERY? Eight statements. One chance each.');
   function card() {
@@ -1671,7 +1774,7 @@ function showEvidence() {
       award('em-' + i, right ? 5 : 0);
       $$('#emCard [data-v]').forEach(x => x.disabled = true); b.classList.add(right ? 'picked-right' : 'picked-wrong');
       if (right) { sfx.correct(); Honey.mount($('#emHoney'), {pose:'tip', mouth:'grin', dur:.8}); }
-      else { sfx.wrong(); fx.quake(); Honey.mount($('#emHoney'), {pose:'oops', mouth:'o', brow:'up', dur:.8}); }
+      else { sfx.wrong(); fx.quake(); Honey.mount($('#emHoney'), {pose:'point', mouth:'smirk', dur:.8}); }
       $('#emFb').innerHTML = '<p><b>' + (right ? 'Correct! +5' : 'Not quite.') + '</b> ' + (e.e ? 'The evidence shows it. ' : 'It’s still an open question. ') + esc(e.why) + '</p><div class="card-actions" style="justify-content:center"><button class="btn small" id="emNext">' + (i + 1 < EVIDENCE.length ? 'Next statement' : 'Finish the trial') + '</button></div>';
       say((right ? 'Correct. ' : 'Not quite. ') + e.why);
       $('#emNext').onclick = () => { i++; card(); };
@@ -1696,19 +1799,16 @@ function showEnd() {
   const rank = RANKS.find(r => pct >= r[0]);
   const rows = CHAPTERS.map((c, i) => { let got = 0, max = 0; Object.entries(ITEMS).forEach(([k, [m, ch]]) => { if (ch === i) { max += m; got += state.scores[k] || 0; } }); return '<tr><td>Chapter ' + c.num + ' · ' + c.title + '</td><td>' + got + ' / ' + max + '</td></tr>'; }).join('');
   const date = new Date().toLocaleDateString(undefined, {year:'numeric', month:'long', day:'numeric'});
-  setScreen('<div class="certificate paper"><div class="cert-k">Human Worlds · Expedition Report</div><h2 class="cert-title">Certificate of Excavation</h2><p>This certifies that</p>' +
-    '<div class="cert-name">' + esc(state.name || 'Field Archaeologist') + '</div><p>completed Prof Honey’s expedition to the lost hominins of Africa, Europe and Asia.</p>' +
-    '<div class="cert-score"><div class="cert-honey" id="certHoney"></div><div class="seal"><div>' + pct + '%<small>SCORE</small></div></div><div><div class="rank">' + rank[1] + '</div><div>' + pts + ' of ' + MAX_POINTS + ' points</div><div style="font-family:var(--type);font-size:.85rem">' + date + '</div></div></div>' +
-    '<table class="breakdown">' + rows + '</table><p style="font-family:var(--hand);font-size:1.5rem;margin-top:8px">“' + esc(rank[2]) + '” — Prof Honey</p></div>' +
-    '<div class="end-actions"><button class="btn alt" id="printBtn">Print or save report</button><button class="btn ghost" id="jBtn">Field Journal</button><button class="btn ghost" id="againBtn">Play again</button></div>' +
-    '<div class="discuss paper"><h3>Read the evidence · class discussion</h3><p style="margin-bottom:6px">Use the map and your journal. Name at least one site in each answer.</p>' +
-    DISCUSSION.map(d => '<details><summary>' + esc(d.title) + '</summary><ol>' + d.items.map(x => '<li>' + esc(x) + '</li>').join('') + '</ol></details>').join('') +
-    '<p style="margin-top:10px"><button class="linkbtn" id="credBtn">Sources &amp; image credits</button></p></div>');
+  setScreen('<div class="certificate paper"><div class="cert-k">Human Worlds · Expedition Report</div><h2 class="cert-title">Certificate of Excavation</h2>' +
+    '<p class="cert-line">This certifies that</p><div class="cert-name">' + esc(state.name || 'Field Archaeologist') + '</div><p class="cert-line">completed Prof Honey’s expedition to the lost hominins of Africa, Europe and Asia.</p>' +
+    '<div class="cert-body"><div class="cert-score"><div class="cert-honey" id="certHoney"></div><div class="seal"><div>' + pct + '%<small>SCORE</small></div></div><div class="cert-rank"><div class="rank">' + rank[1] + '</div><div>' + pts + ' of ' + MAX_POINTS + ' points</div><div style="font-family:var(--type);font-size:.85rem">' + date + '</div></div></div>' +
+    '<div><table class="breakdown">' + rows + '</table><p class="cert-quote">“' + esc(rank[2]) + '” — Prof Honey</p></div></div></div>' +
+    '<div class="end-actions"><button class="btn alt" id="printBtn">Print or save report</button><button class="btn ghost" id="discBtn">Class discussion questions</button><button class="btn ghost" id="jBtn">Field Journal</button><button class="btn ghost" id="againBtn">Play again</button></div>');
   Honey.mount($('#certHoney'), {pose:'tip', mouth:'grin', dur:2});
   if (pct >= 60) setTimeout(sfx.fanfare, 300);
   $('#printBtn').onclick = () => window.print();
   $('#jBtn').onclick = () => openJournal();
-  $('#credBtn').onclick = openCredits;
+  $('#discBtn').onclick = () => { openModal('<h2 class="modal-title">Read the evidence · class discussion</h2><div class="discuss"><p style="margin-bottom:6px">Use the map and your journal. Name at least one site in each answer.</p>' + DISCUSSION.map(d => '<details open><summary>' + esc(d.title) + '</summary><ol>' + d.items.map(x => '<li>' + esc(x) + '</li>').join('') + '</ol></details>').join('') + '<p style="margin-top:10px"><button class="linkbtn" id="credBtn2">Sources &amp; image credits</button></p></div>'); $('#credBtn2').onclick = openCredits; };
   $('#againBtn').onclick = () => { const name = state.name, muted = state.muted; state = fresh(); state.name = name; state.muted = muted; save(); showTitle(); };
 }
 
