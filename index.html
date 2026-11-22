@@ -1344,7 +1344,7 @@ const ICON = {
 
 /* ---------- state ---------- */
 const SAVE_KEY = 'profHoney_lostHominins_v1';
-const fresh = () => ({step:0, name:'', scores:{}, visited:[], unlocked:[], muted:false, lastSite:null, gagDone:false, snakesDone:false});
+const fresh = () => ({step:0, name:'', scores:{}, visited:[], unlocked:[], muted:false, lastSite:null, gagDone:false, snakesDone:false, boulderDone:false});
 function load() { try { const s = JSON.parse(localStorage.getItem(SAVE_KEY)); if (s && typeof s.step === 'number') return Object.assign(fresh(), s); } catch (e) {} return null; }
 let state = load() || fresh();
 function save() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch (e) {} }
@@ -1390,6 +1390,7 @@ const sfx = (() => {
     stamp() { noise(.14, 'lowpass', 500, 1, .5); tone(90, .18, 'sine', .35); },
     page() { noise(.22, 'highpass', 1800, .7, .05); },
     click() { tone(700, .05, 'square', .025); },
+    rumble() { noise(2.2, 'lowpass', 140, 1, .5); tone(55, 2, 'sine', .25, 0, 40); },
     hiss() { noise(.9, 'highpass', 4200, .8, .05); noise(.7, 'highpass', 5200, .8, .04, 1.1); },
     boing() { tone(420, .35, 'sine', .07, 0, 1250); tone(1250, .5, 'sine', .06, .38, 380); tone(180, .12, 'triangle', .07, 2.05, 120); },
     fanfare() { [[392,.16],[523,.16],[587,.16],[659,.42],[587,.16],[659,.16],[784,.7]].reduce((w, [f, d]) => { brass(f, d, w, .08); brass(f / 2, d, w, .04); return w + d; }, 0); },
@@ -1486,8 +1487,34 @@ const fx = (() => {
     for (let i = 0; i < n; i++) snakes.push({x: 40 + Math.random() * (cv.width - 80), y: -60 - Math.random() * 140, vy: 0, len: 110 + Math.random() * 60, w: 14 + Math.random() * 4, belly: '#e9d98a', dark: '#2f4d1c', ang: Math.PI / 2 + (Math.random() - .5) * 1.2, spin: (Math.random() - .5) * .03, phase: Math.random() * 6, speed: 6, col: cols[i % 4], dir: Math.random() < .5 ? -1 : 1, start: now + i * 140 + Math.random() * 120, landed: false, alpha: 1});
     parts = []; snakeRun = true; requestAnimationFrame(snakeLoop);
   }
+  // booby-trap boulder rolling from the upper left to the lower right
+  function boulderRoll(ms) {
+    const R = Math.max(70, Math.min(cv.width, cv.height) * .16), t0 = performance.now();
+    const x0 = -R * 1.2, y0 = cv.height * .12, x1 = cv.width + R * 1.2, y1 = cv.height * .92;
+    let seed = 5; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+    const bumps = Array.from({length: 18}, (_, i) => 1 + (rnd() - .5) * .14);
+    const cracks = Array.from({length: 6}, () => [rnd() * 6.28, .3 + rnd() * .5, (rnd() - .5) * 1.2]);
+    const dust = [];
+    (function step(now) {
+      const p = Math.min(1, (now - t0) / ms), e = p * p * (3 - 2 * p) * .4 + p * .6;
+      const x = x0 + (x1 - x0) * e, y = y0 + (y1 - y0) * e + Math.abs(Math.sin(e * 9)) * -R * .12, rot = (x - x0) / R;
+      c.clearRect(0, 0, cv.width, cv.height);
+      if (Math.random() < .7) dust.push({x: x - R * .5 + Math.random() * R * .3, y: y + R * .7, r: 8 + Math.random() * 14, a: .45});
+      dust.forEach(d => { d.r += .7; d.a -= .012; d.y -= .3; c.globalAlpha = Math.max(0, d.a) * (1 - Math.max(0, p - .7) / .3); c.fillStyle = '#b39572'; c.beginPath(); c.arc(d.x, d.y, d.r, 0, 7); c.fill(); });
+      c.globalAlpha = p < .72 ? 1 : Math.max(0, 1 - (p - .72) / .28);
+      c.save(); c.translate(x, y); c.rotate(rot);
+      c.beginPath(); bumps.forEach((b, i) => { const a = i / bumps.length * 6.283; c[i ? 'lineTo' : 'moveTo'](Math.cos(a) * R * b, Math.sin(a) * R * b); }); c.closePath();
+      const g = c.createRadialGradient(-R * .35, -R * .35, R * .1, 0, 0, R * 1.1); g.addColorStop(0, '#a39582'); g.addColorStop(.6, '#7a6c5a'); g.addColorStop(1, '#4e4337');
+      c.fillStyle = g; c.fill(); c.lineWidth = 4; c.strokeStyle = '#1e160e'; c.stroke();
+      c.strokeStyle = 'rgba(30,22,14,.75)'; c.lineWidth = 2.5;
+      cracks.forEach(([a, l, bend]) => { c.beginPath(); c.moveTo(Math.cos(a) * R * .95, Math.sin(a) * R * .95); c.quadraticCurveTo(Math.cos(a + bend) * R * (1 - l * .6), Math.sin(a + bend) * R * (1 - l * .6), Math.cos(a) * R * (1 - l), Math.sin(a) * R * (1 - l)); c.stroke(); });
+      c.fillStyle = 'rgba(40,30,20,.35)'; [[.3, .2, .12], [-.4, .35, .09], [.1, -.45, .1], [-.2, -.1, .07]].forEach(([u, v, r]) => { c.beginPath(); c.arc(u * R, v * R, r * R, 0, 7); c.fill(); });
+      c.restore(); c.globalAlpha = 1;
+      if (p < 1) requestAnimationFrame(step); else c.clearRect(0, 0, cv.width, cv.height);
+    })(t0);
+  }
   function quake() { const app = $('#app'); app.classList.remove('quake'); void app.offsetWidth; app.classList.add('quake'); rockfall(); }
-  return { quake, rockfall, snakeRain };
+  return { quake, rockfall, snakeRain, boulderRoll };
 })();
 
 /* ---------- top bar ---------- */
@@ -1817,7 +1844,8 @@ function showDig(id) {
 /* Easter egg: once per game, the first time a question is missed twice, Prof Honey's hat blows off */
 function playGag(after) {
   const el = $('#screen .ph');
-  if (!el || (state.gagDone && state.snakesDone)) { setTimeout(after, 900); return; }
+  if (!el || (state.gagDone && state.snakesDone && state.boulderDone)) { setTimeout(after, 900); return; }
+  if (state.gagDone && state.snakesDone) return playBoulder(el, after);
   if (state.gagDone) return playSnakes(el, after);
   state.gagDone = true; save();
   Honey.mount(el, {pose:'whoa', mouth:'o', brow:'up'});
@@ -1834,6 +1862,15 @@ function playSnakes(el, after) {
   const bub = $('#screen .bubble'); if (bub) bubble(bub, 'Snakes?! Okay, okay — nobody panic. They’re friendly. Let’s look at the right answer.');
   fx.snakeRain(); sfx.hiss();
   setTimeout(() => { el._fadeNext = true; after(); }, 3000);
+}
+/* Easter egg #3: the third double miss sets off a booby-trap boulder (once per game) */
+function playBoulder(el, after) {
+  state.boulderDone = true; save();
+  Honey.mount(el, {pose:'oops', mouth:'o', brow:'up'});
+  const bub = $('#screen .bubble'); if (bub) bubble(bub, 'Booby trap! Everybody duck! …Phew. Okay — let’s check the right answer.');
+  sfx.rumble(); fx.boulderRoll(2300);
+  const app = $('#app'); setTimeout(() => { app.classList.remove('quake'); void app.offsetWidth; app.classList.add('quake'); }, 700);
+  setTimeout(() => { el._fadeNext = true; after(); }, 2500);
 }
 /* Multiple-choice engine. opts: {container, q, item, max, onWrong, onDone} */
 function mcq({container, q, item, max = 10, onWrong, onDone}) {
