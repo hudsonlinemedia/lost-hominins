@@ -1641,7 +1641,7 @@ function mapSVG(opts = {}) {
   const grid = [];
   for (let lon = -20; lon <= 140; lon += 20) grid.push(routeD([[lon, -50], [lon, 75]]));
   for (let lat = -40; lat <= 60; lat += 20) grid.push(routeD([[-25, lat], [150, lat]]));
-  const labels = [[-13, 54, 'ATLANTIC'], [22, 59, 'EUROPE'], [15, 10, 'AFRICA'], [106, 58, 'ASIA'], [74, -25, 'INDIAN OCEAN'], [132, -25, 'AUSTRALIA']];
+  const labels = [[-13, 54, 'ATLANTIC'], [22, 59, 'EUROPE'], [15, 10, 'AFRICA'], [118, 64, 'ASIA'], [74, -25, 'INDIAN OCEAN'], [132, -25, 'AUSTRALIA']];
   let s = '<svg viewBox="0 0 800 465" id="' + (opts.id || 'worldMap') + '" role="img" aria-label="Expedition map of Africa, Europe and Asia">' +
     '<defs><pattern id="sea" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M0 5 Q 2.5 3 5 5 T 10 5" fill="none" stroke="#9c8158" stroke-width=".6" opacity=".5"/></pattern>' +
     '<radialGradient id="parch" cx="50%" cy="45%" r="75%"><stop offset="0" stop-color="#f5e6c3"/><stop offset=".7" stop-color="#e9d2a0"/><stop offset="1" stop-color="#cdae74"/></radialGradient>' +
