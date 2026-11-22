@@ -425,15 +425,8 @@ button.chip:hover{border-color:var(--red)}
 .ph .ph-lines{opacity:0}
 .ph .ph-pencil{display:none}
 .ph.ph-drawing .ph-lines{opacity:1}
-.ph.ph-drawing .ph-lines>*{stroke-dasharray:1 1;stroke-dashoffset:1;animation-name:phDraw;animation-timing-function:ease-out;animation-fill-mode:forwards}
-@keyframes phDraw{to{stroke-dashoffset:0}}
-.ph.ph-drawing .ph-full{opacity:0;animation:phFill calc(var(--phdur) * .22) ease forwards;animation-delay:calc(var(--phdur) * .8)}
-@keyframes phFill{to{opacity:1}}
-.ph.ph-drawing .ph-pencil{display:block;animation:phPenY calc(var(--phdur) * .95) linear forwards}
-.ph-pencil-x{animation:phPenX .21s ease-in-out infinite alternate}
-@keyframes phPenY{0%{transform:translate(0,62px)}90%{transform:translate(0,396px);opacity:1}100%{transform:translate(0,410px);opacity:0}}
-@keyframes phPenX{from{transform:translateX(92px)}to{transform:translateX(208px)}}
-@media (prefers-reduced-motion:reduce){.ph-pencil-x{animation:none;transform:translateX(150px)}}
+.ph.ph-drawing .ph-lines path,.ph.ph-drawing .ph-lines circle{stroke:#1a120a}
+.ph.ph-drawing .ph-pencil{display:block}
 
 </style></head><body>
 <div id="app">
@@ -841,8 +834,7 @@ const Honey = (() => {
     const geo = s.c ? 'circle cx="' + s.c[0] + '" cy="' + s.c[1] + '" r="' + s.c[2] + '"' : 'path d="' + s.d + '"';
     if (mode === 'line') {
       if (s.h || s.nl || !s.w) return '';
-      const delay = (minY(s) / 400) * dur * 0.72;
-      return '<' + geo + t + ' pathLength="1" fill="none" stroke="' + INK + '" stroke-width="' + Math.max(1.4, s.w * 0.75) + '" style="animation-delay:' + delay.toFixed(2) + 's;animation-duration:' + (dur * 0.3).toFixed(2) + 's"/>';
+      return '<' + geo + t + ' fill="none" stroke="' + INK + '" stroke-width="' + Math.max(1.6, s.w * 0.85) + '"/>';
     }
     if (s.h) return '<' + geo + t + ' fill="url(#' + 'phh' + i + ')" stroke="none" opacity=".5"/>';
     const stroke = s.w ? ' stroke="' + (s.s || INK) + '" stroke-width="' + s.w + '" stroke-linecap="round" stroke-linejoin="round"' : ' stroke="none"';
@@ -872,7 +864,8 @@ const Honey = (() => {
     return '<svg class="ph-svg" viewBox="0 0 300 400" role="img" aria-label="' + (opts.label || 'Prof Honey, in a fedora, field jacket and red cat-eye sunglasses') + '" style="--phdur:' + dur + 's">' +
       '<defs><pattern id="phs' + id + 'st" x="2" width="28" height="10" patternUnits="userSpaceOnUse"><rect width="14" height="10" fill="' + HR + '"/><rect x="14" width="14" height="10" fill="' + HB + '"/></pattern><pattern id="phh' + id + '" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(40)"><line x1="0" y1="0" x2="0" y2="6" stroke="' + INK + '" stroke-width="1.1"/></pattern>' +
       '<filter id="phs' + id + '" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="' + (id % 7 + 2) + '"/><feDisplacementMap in="SourceGraphic" scale="1.8"/></filter></defs>' +
-      '<g filter="url(#phs' + id + ')"><g class="ph-lines">' + lines + '</g><g class="ph-full">' + full + '</g></g>' + pencil + '</svg>';
+      '<clipPath id="phcl' + id + '"><rect class="ph-clip-l" x="-60" y="-40" width="420" height="500"/></clipPath><clipPath id="phcf' + id + '"><rect class="ph-clip-f" x="-60" y="-40" width="420" height="500"/></clipPath>' +
+      '<g filter="url(#phs' + id + ')"><g class="ph-lines" clip-path="url(#phcl' + id + ')">' + lines + '</g><g class="ph-full" clip-path="url(#phcf' + id + ')">' + full + '</g></g>' + pencil + '</svg>';
   }
   // Mount into a container; animate the pencil drawing (top to bottom) unless instant.
   function mount(container, opts = {}) {
@@ -881,12 +874,28 @@ const Honey = (() => {
     container.innerHTML = svg(opts);
     container.classList.add('ph');
     container.classList.remove('ph-drawing', 'ph-done');
+    const token = (container._phTok = (container._phTok || 0) + 1);
     if (opts.instant) { container.classList.add('ph-done'); return; }
-    void container.offsetWidth;
+    const clipL = container.querySelector('.ph-clip-l'), clipF = container.querySelector('.ph-clip-f'), pen = container.querySelector('.ph-pencil');
+    const dur = (opts.dur || 2.2) * (reduce ? 0.35 : 1) * 1000;
+    const TOP = 34, BOTTOM = 404;
+    const set = (yLine, yFull) => { clipL.setAttribute('height', Math.max(0, yLine + 40)); clipF.setAttribute('height', Math.max(0, yFull + 40)); };
+    set(TOP - 40, TOP - 40);
     container.classList.add('ph-drawing');
-    const dur = (opts.dur || 2.2) * (reduce ? 0.35 : 1);
-    clearTimeout(container._phT);
-    container._phT = setTimeout(() => { container.classList.remove('ph-drawing'); container.classList.add('ph-done'); }, dur * 1000 + 150);
+    let t0 = null;
+    const step = now => {
+      if (container._phTok !== token || !container.isConnected) return;
+      if (t0 === null) t0 = now;
+      const p = Math.min(1, (now - t0) / dur);
+      const y = TOP + (BOTTOM - TOP) * p;
+      const half = y < 230 ? 62 : 104;
+      const x = 150 + half * Math.sin(p * Math.PI * 2 * (dur / 1000) * 2.6);
+      set(y + 6, y - 16);
+      pen.setAttribute('transform', 'translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ')');
+      if (p < 1) requestAnimationFrame(step);
+      else { set(460, 460); container.classList.remove('ph-drawing'); container.classList.add('ph-done'); }
+    };
+    requestAnimationFrame(step);
   }
   return { svg, mount };
 })();
