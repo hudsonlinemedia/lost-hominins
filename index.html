@@ -1000,8 +1000,10 @@ const Honey = (() => {
     const t = s.t ? ' transform="' + s.t + '"' : '';
     const geo = s.c ? 'circle cx="' + s.c[0] + '" cy="' + s.c[1] + '" r="' + s.c[2] + '"' : 'path d="' + s.d + '"';
     if (mode === 'line') {
-      if (s.h || s.nl || !s.w) return '';
-      return '<' + geo + t + ' fill="none" stroke="' + INK + '" stroke-width="' + Math.max(1.6, s.w * 0.85) + '"/>';
+      if (s.h || s.nl || (s.o && s.o < 1)) return '';
+      const pf = s.f && s.f !== 'none' ? '#f6efdf' : 'none'; // paper fill hides lines underneath (no neck line through the chin)
+      if (!s.w) return pf === 'none' ? '' : '<' + geo + t + ' fill="' + pf + '" stroke="none"/>';
+      return '<' + geo + t + ' fill="' + pf + '" stroke="' + INK + '" stroke-width="' + Math.max(1.6, s.w * 0.85) + '"/>';
     }
     if (s.h) return '<' + geo + t + ' fill="url(#' + 'phh' + i + ')" stroke="none" opacity=".5"/>';
     const stroke = s.w ? ' stroke="' + (s.s || INK) + '" stroke-width="' + s.w + '" stroke-linecap="round" stroke-linejoin="round"' : ' stroke="none"';
