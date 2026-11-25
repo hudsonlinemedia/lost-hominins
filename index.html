@@ -366,7 +366,7 @@ button.chip:hover{border-color:var(--red)}
 .cert-body .cert-score{margin:0;justify-content:flex-start;gap:14px;flex-wrap:nowrap}
 .cert-pair{display:flex;align-items:flex-end}
 .cert-honey{width:clamp(110px,13vw,160px);height:min(230px,32vh)}
-.cert-saba{width:clamp(40px,4.6vw,58px);margin-left:-16px;margin-bottom:-2px}
+.cert-saba{width:clamp(48px,5.6vw,70px);margin-left:-16px;margin-bottom:-2px}
 .cert-saba svg{width:100%;height:auto;display:block}
 .seal{width:min(120px,17vh);height:min(120px,17vh);font-size:min(2rem,4.6vh)}
 .cert-rank{min-width:0}
@@ -1285,67 +1285,117 @@ const Relics = (() => {
   return { svg, icon };
 })();
 
-/* ===== Saba — Prof Honey's long-haired brown tabby (after her photos) ===== */
+/* ===== Saba — Prof Honey's long-haired brown tabby, a handsome boy (drawn from Jon's photos) ===== */
 const Saba = (() => {
-  const INK = '#151008', FUR = '#7a654f', FUR_L = '#bfa27c', FUR_D = '#2f241b', CREAM = '#ece1cc', EYE = '#b8bb4c', NOSE = '#cf8f80';
-  // shaggy outline: ellipse arc with pointed fur tufts
-  function shag(cx, cy, rx, ry, n, tuft, seed, from = 0, to = Math.PI * 2, closed = true) {
-    let s = seed, rnd = () => (s = (s * 9301 + 49297) % 233280) / 233280, d = '';
+  const INK = '#1a1510', FUR = '#6f6252', FUR_M = '#8a7a66', FUR_D = '#2b2219', RUFF = '#c8ab84', RUFF_L = '#ddc6a2',
+        CREAM = '#f3eee5', EYE = '#b9bf48', EYE_L = '#d3d878', EYE_D = '#7f8a2a', RIM = '#dcae84', NOSE = '#d98f86', BRIDGE = '#9a7354', PAW = '#3a2e24';
+  // seeded random so the fur comes out the same every time
+  let seed = 7; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+  // fur outline: an ellipse whose edge breaks into soft pointed tufts
+  function shag(cx, cy, rx, ry, n, tuft, from = 0, to = Math.PI * 2, closed = true) {
+    let d = '';
     for (let i = 0; i <= n; i++) {
-      const a = from + (to - from) * i / n;
-      const x = cx + Math.cos(a) * rx, y = cy + Math.sin(a) * ry;
+      const a = from + (to - from) * i / n, x = cx + Math.cos(a) * rx, y = cy + Math.sin(a) * ry;
       if (i) {
-        const a2 = from + (to - from) * (i - .45 - rnd() * .2) / n, t = tuft * (.6 + rnd() * .8);
-        d += ' L ' + (cx + Math.cos(a2) * (rx + t)).toFixed(1) + ' ' + (cy + Math.sin(a2) * (ry + t)).toFixed(1) + ' L ';
+        const a2 = from + (to - from) * (i - .5 + (rnd() - .5) * .3) / n, t = tuft * (.55 + rnd() * .9);
+        d += ' Q ' + (cx + Math.cos(a2 - .03) * (rx + t * .5)).toFixed(1) + ' ' + (cy + Math.sin(a2 - .03) * (ry + t * .5)).toFixed(1) + ' ' +
+             (cx + Math.cos(a2) * (rx + t)).toFixed(1) + ' ' + (cy + Math.sin(a2) * (ry + t)).toFixed(1) + ' L ';
       } else d += 'M ';
       d += x.toFixed(1) + ' ' + y.toFixed(1);
     }
     return d + (closed ? ' Z' : '');
   }
+  // head outline: fur tufts grow from fine (crown) to fluffy (cheeks/chin); face slightly wider at the cheeks
+  function headPath(cx, cy, rx, ry, n, tTop, tBot) {
+    let d = '';
+    const P = (a, r) => [cx + Math.cos(a) * (rx + r) * (1 + .07 * Math.max(0, Math.sin(a + .5))), cy + Math.sin(a) * (ry + r)];
+    for (let i = 0; i <= n; i++) {
+      const a = -Math.PI / 2 + Math.PI * 2 * i / n, [x, y] = P(a, 0);
+      if (i) {
+        const a2 = -Math.PI / 2 + Math.PI * 2 * (i - .5 + (rnd() - .5) * .3) / n, k = Math.pow((Math.sin(a2) + 1) / 2, 1.4);
+        const t = (tTop + (tBot - tTop) * k) * (.6 + rnd() * .8), [qx, qy] = P(a2 - .03, t * .5), [tx, ty] = P(a2, t);
+        d += ' Q ' + qx.toFixed(1) + ' ' + qy.toFixed(1) + ' ' + tx.toFixed(1) + ' ' + ty.toFixed(1) + ' L ';
+      } else d += 'M ';
+      d += x.toFixed(1) + ' ' + y.toFixed(1);
+    }
+    return d + ' Z';
+  }
   const st = (w, c) => ' stroke="' + (c || INK) + '" stroke-width="' + w + '" stroke-linejoin="round" stroke-linecap="round"';
+  const strands = (pts, w, c, op) => '<path d="' + pts + '" fill="none"' + st(w, c) + (op ? ' opacity="' + op + '"' : '') + '/>';
   function svg() {
-    let s = '<svg class="saba-svg" viewBox="0 0 170 210" role="img" aria-label="Saba, Prof Honey’s long-haired tabby cat">';
-    // very bushy ringed tail wrapped around the front
-    s += '<path d="' + shag(108, 186, 62, 17, 30, 7, 21) + '" fill="' + FUR + '"' + st(2) + '/>';
-    s += '<g fill="' + FUR_D + '">' + [62, 82, 102, 122, 142].map(x => '<path d="M ' + x + ' 172 C ' + (x + 6) + ' 180 ' + (x + 6) + ' 192 ' + x + ' 201 L ' + (x + 7) + ' 201 C ' + (x + 13) + ' 192 ' + (x + 13) + ' 180 ' + (x + 7) + ' 172 Z"/>').join('') + '</g>';
-    // shaggy body
-    s += '<path d="' + shag(86, 140, 50, 48, 30, 9, 3) + '" fill="' + FUR + '"' + st(2) + '/>';
-    s += '<g stroke="' + FUR_D + '" stroke-width="4" stroke-linecap="round" fill="none" opacity=".9"><path d="M 42 120 C 50 116 56 120 58 128"/><path d="M 38 140 C 48 136 56 140 58 148"/><path d="M 42 160 C 50 156 56 160 58 166"/><path d="M 130 120 C 122 116 116 120 114 128"/><path d="M 134 140 C 124 136 116 140 114 148"/><path d="M 130 160 C 122 156 116 160 114 166"/></g>';
-    // big mane / ruff
-    s += '<path d="' + shag(86, 108, 40, 32, 26, 10, 11) + '" fill="' + FUR_L + '"' + st(1.6) + '/>';
-    s += '<g stroke="' + FUR + '" stroke-width="1.6" fill="none" opacity=".8"><path d="M 66 100 l -4 18"/><path d="M 74 104 l -2 20"/><path d="M 98 104 l 2 20"/><path d="M 106 100 l 4 18"/><path d="M 86 112 l 0 18"/></g>';
-    // front legs, striped, fluffy toes
-    [72, 100].forEach(x => {
-      s += '<path d="M ' + (x - 8) + ' 128 L ' + (x - 9) + ' 172 C ' + (x - 9) + ' 180 ' + (x + 9) + ' 180 ' + (x + 9) + ' 172 L ' + (x + 8) + ' 128 Z" fill="' + FUR + '"' + st(1.8) + '/>';
-      s += '<g stroke="' + FUR_D + '" stroke-width="3" stroke-linecap="round"><path d="M ' + (x - 7) + ' 140 h 14"/><path d="M ' + (x - 7) + ' 150 h 14"/><path d="M ' + (x - 7) + ' 160 h 14"/></g>';
-      s += '<path d="M ' + (x - 3) + ' 174 v 4 M ' + (x + 3) + ' 174 v 4" stroke="' + INK + '" stroke-width="1.1"/>';
+    seed = 7;
+    let s = '<svg class="saba-svg" viewBox="0 0 200 240" role="img" aria-label="Saba, Prof Honey’s long-haired tabby cat">';
+    // ---- huge bushy tail wrapped round the front, dark with rings
+    s += '<path d="' + shag(112, 214, 76, 19, 64, 5) + '" fill="' + FUR + '"' + st(1.4) + '/>';
+    s += '<g fill="' + FUR_D + '" opacity=".88">' + [52, 74, 96, 118, 140, 162].map(x =>
+      '<path d="M ' + x + ' 199 C ' + (x + 7) + ' 207 ' + (x + 7) + ' 222 ' + (x + 1) + ' 231 L ' + (x + 10) + ' 231 C ' + (x + 16) + ' 222 ' + (x + 16) + ' 207 ' + (x + 9) + ' 198 Z"/>').join('') + '</g>';
+    s += '<path d="M 178 206 C 190 208 196 216 192 226 C 186 232 176 230 172 224 Z" fill="' + FUR_D + '"/>';
+    s += strands('M 40 214 l 10 -2 M 60 226 l 12 -1 M 130 228 l 12 0 M 150 206 l 10 2', 1, FUR_M, .8);
+    // ---- body: fluffy pear shape, darker flanks with curved tabby stripes
+    s += '<path d="' + shag(100, 160, 55, 55, 70, 5) + '" fill="' + FUR + '"' + st(1.4) + '/>';
+    s += '<g fill="none" stroke="' + FUR_D + '" stroke-width="4" stroke-linecap="round" opacity=".8">' +
+      '<path d="M 50 140 C 58 134 66 138 68 148"/><path d="M 46 160 C 56 154 64 158 66 168"/><path d="M 50 182 C 58 176 66 180 66 190"/>' +
+      '<path d="M 150 140 C 142 134 134 138 132 148"/><path d="M 154 160 C 144 154 136 158 134 168"/><path d="M 150 182 C 142 176 134 180 134 190"/></g>';
+    s += strands('M 48 130 l -6 -4 M 44 150 l -7 -2 M 46 172 l -7 0 M 152 130 l 6 -4 M 156 150 l 7 -2 M 154 172 l 7 0', 1.1, FUR_D, .6);
+    // ---- big tan ruff (the "mane") over the chest
+    s += '<path d="' + shag(100, 124, 48, 38, 60, 7) + '" fill="' + RUFF + '"' + st(1.3, FUR_D) + '/>';
+    s += '<path d="' + shag(100, 134, 32, 24, 36, 6) + '" fill="' + RUFF_L + '" stroke="none"/>';
+    s += strands('M 76 112 l -5 22 M 84 116 l -3 24 M 92 118 l -1 24 M 100 120 l 0 26 M 108 118 l 1 24 M 116 116 l 3 24 M 124 112 l 5 22 M 70 128 l -4 16 M 130 128 l 4 16', 1.2, FUR_M, .7);
+    s += strands('M 80 140 l -2 10 M 96 142 l 0 12 M 104 142 l 0 12 M 120 140 l 2 10', 1.5, FUR_D, .4);
+    // ---- front legs: soft taper, broken tabby bands, dark paws with pale toe tufts
+    [87, 113].forEach(x => {
+      s += '<path d="M ' + (x - 9.5) + ' 148 C ' + (x - 10.5) + ' 166 ' + (x - 11) + ' 186 ' + (x - 10.5) + ' 199 C ' + (x - 10.5) + ' 210 ' + (x + 10.5) + ' 210 ' + (x + 10.5) + ' 199 C ' + (x + 11) + ' 186 ' + (x + 10.5) + ' 166 ' + (x + 9.5) + ' 148 Z" fill="' + FUR_M + '"' + st(1.2, FUR_D) + '/>';
+      s += '<g stroke="' + FUR_D + '" stroke-width="2.4" stroke-linecap="round" fill="none" opacity=".8">' + [160, 169, 178, 187].map((y, i) =>
+        '<path d="M ' + (x - 9) + ' ' + y + ' q 4 ' + (2 + i % 2) + ' 8 1.5 M ' + (x + 2) + ' ' + (y + 1.5) + ' q 4 .5 7 -1.5"/>').join('') + '</g>';
+      s += strands('M ' + (x - 10) + ' 156 l -3 6 M ' + (x - 11) + ' 172 l -3 5 M ' + (x + 10) + ' 158 l 3 6 M ' + (x + 11) + ' 174 l 3 5', 1, FUR_D, .6);
+      s += '<path d="M ' + (x - 10.5) + ' 196 C ' + (x - 12) + ' 210 ' + (x + 12) + ' 210 ' + (x + 10.5) + ' 196 C ' + (x + 6) + ' 193.5 ' + (x - 6) + ' 193.5 ' + (x - 10.5) + ' 196 Z" fill="' + PAW + '"' + st(1.4) + '/>';
+      s += strands('M ' + (x - 3.5) + ' 202 v 5 M ' + (x + 3.5) + ' 202 v 5', 1, CREAM, .75);
     });
-    // tall ears with lynx tips and furry insides
-    [[62, 1], [110, -1]].forEach(([x, k]) => {
-      s += '<path d="M ' + (x - 12 * k) + ' 62 L ' + (x - 6 * k) + ' 18 L ' + (x + 20 * k) + ' 46 Z" fill="' + FUR + '"' + st(2) + '/>';
-      s += '<path d="M ' + (x - 7 * k) + ' 56 L ' + (x - 5 * k) + ' 28 L ' + (x + 12 * k) + ' 48 Z" fill="' + FUR_L + '"/>';
-      s += '<path d="M ' + (x - 4 * k) + ' 54 l ' + (4 * k) + ' -12 M ' + (x) + ' 54 l ' + (6 * k) + ' -10 M ' + (x + 4 * k) + ' 54 l ' + (6 * k) + ' -6" stroke="' + CREAM + '" stroke-width="1.3" fill="none"/>';
-      s += '<path d="M ' + (x - 6 * k) + ' 18 L ' + (x - 8 * k) + ' 6 M ' + (x - 6 * k) + ' 18 L ' + (x - 2 * k) + ' 8" stroke="' + INK + '" stroke-width="1.6" fill="none" stroke-linecap="round"/>';
+    // ---- head group, tilted a touch for a sweet, curious look
+    s += '<g transform="translate(100 116) rotate(-6) scale(.93) translate(-100 -112)">';
+    // ears: tall, set wide, dark backs, long pale furnishings, lynx tips
+    [[62, 1], [138, -1]].forEach(([x, k]) => {
+      s += '<path d="M ' + (x - 10 * k) + ' 72 C ' + (x - 8 * k) + ' 52 ' + (x - 4 * k) + ' 30 ' + (x - 1 * k) + ' 16 C ' + (x + 8 * k) + ' 24 ' + (x + 20 * k) + ' 36 ' + (x + 28 * k) + ' 50 Z" fill="' + FUR + '"' + st(1.9) + '/>';
+      s += '<path d="M ' + (x - 4 * k) + ' 64 C ' + (x - 3 * k) + ' 48 ' + (x - 1 * k) + ' 36 ' + (x + 1 * k) + ' 27 C ' + (x + 8 * k) + ' 34 ' + (x + 16 * k) + ' 42 ' + (x + 20 * k) + ' 52 Z" fill="' + RUFF_L + '"/>';
+      s += strands('M ' + (x - 2 * k) + ' 62 q ' + (2 * k) + ' -10 ' + (7 * k) + ' -18 M ' + (x + 3 * k) + ' 62 q ' + (3 * k) + ' -9 ' + (10 * k) + ' -15 M ' + (x + 8 * k) + ' 60 q ' + (4 * k) + ' -6 ' + (10 * k) + ' -9 M ' + (x - 3 * k) + ' 50 q ' + (1 * k) + ' -8 ' + (4 * k) + ' -14', 1.2, CREAM);
+      s += strands('M ' + (x - 1 * k) + ' 16 C ' + (x - 2 * k) + ' 11 ' + (x - 3 * k) + ' 7 ' + (x - 5 * k) + ' 3 M ' + (x - 1 * k) + ' 16 C ' + (x) + ' 11 ' + (x + 1 * k) + ' 7 ' + (x + 3 * k) + ' 4', 1.6, INK);
     });
-    // head with shaggy cheeks
-    s += '<path d="' + shag(86, 72, 36, 30, 26, 6, 7) + '" fill="' + FUR + '"' + st(2) + '/>';
-    s += '<path d="' + shag(86, 88, 32, 14, 16, 6, 4, 0, Math.PI, false) + '" fill="' + FUR_L + '" stroke="none"/>';
-    // dark vertical forehead stripes and cheek lines
-    s += '<g stroke="' + FUR_D + '" stroke-width="2.8" stroke-linecap="round" fill="none"><path d="M 79 62 L 78 46"/><path d="M 86 60 L 86 43"/><path d="M 93 62 L 94 46"/><path d="M 72 60 L 68 50"/><path d="M 100 60 L 104 50"/><path d="M 56 74 l 10 3"/><path d="M 116 74 l -10 3"/><path d="M 59 84 l 9 0"/><path d="M 113 84 l -9 0"/></g>';
-    // light eye-rims and calm, half-lidded green-yellow eyes
-    [[73, 1], [99, -1]].forEach(([x]) => {
-      s += '<ellipse cx="' + x + '" cy="72" rx="10.5" ry="7" fill="' + FUR_L + '"/>';
-      s += '<path d="M ' + (x - 8) + ' 72 C ' + (x - 4) + ' 67 ' + (x + 4) + ' 67 ' + (x + 8) + ' 72 C ' + (x + 4) + ' 77 ' + (x - 4) + ' 77 ' + (x - 8) + ' 72 Z" fill="' + EYE + '"' + st(1.7) + '/>';
-      s += '<path d="M ' + x + ' 68.5 v 7" stroke="' + INK + '" stroke-width="2.2" stroke-linecap="round"/>';
-      s += '<path d="M ' + (x - 9) + ' 70.5 C ' + (x - 4) + ' 67.5 ' + (x + 4) + ' 67.5 ' + (x + 9) + ' 70.5" fill="none" stroke="' + INK + '" stroke-width="2.6"/>';
-      s += '<circle cx="' + (x + 3) + '" cy="71" r="1.1" fill="#fff"/>';
+    // head: broad, soft cheeks
+    s += '<path d="' + headPath(100, 86, 47, 36, 76, 1.6, 7.5) + '" fill="' + FUR_M + '"' + st(1.6) + '/>';
+    s += '<path d="' + shag(100, 100, 48, 18, 40, 6, 0, Math.PI, false) + '" fill="' + RUFF + '" stroke="none" opacity=".92"/>';
+    // forehead: fine tapered tabby stripes that stop well above the eyes (no frown)
+    s += '<g fill="' + FUR_D + '" stroke="none" opacity=".78">' + [[100, 48, 1.9], [93, 50, 1.6], [107, 50, 1.6], [86, 55, 1.4], [114, 55, 1.4], [80, 61, 1.2], [120, 61, 1.2]].map(([x, y, w]) =>
+      '<path d="M ' + (x - w) + ' 68 C ' + (x - w) + ' 61 ' + (x - w * .4) + ' ' + (y + 5) + ' ' + x + ' ' + y + ' C ' + (x + w * .4) + ' ' + (y + 5) + ' ' + (x + w) + ' 61 ' + (x + w) + ' 68 C ' + (x + w * .3) + ' 70 ' + (x - w * .3) + ' 70 ' + (x - w) + ' 68 Z"/>').join('') + '</g>';
+    // cheek stripes sweep outward and slightly down
+    s += '<g fill="none" stroke="' + FUR_D + '" stroke-width="2.2" stroke-linecap="round" opacity=".75"><path d="M 60 96 C 56 97 53 98 50 100"/><path d="M 61 103 C 57 105 54 107 51 109"/><path d="M 140 96 C 144 97 147 98 150 100"/><path d="M 139 103 C 143 105 146 107 149 109"/></g>';
+    // eyes: level, wide-set, soft arched lids, rounder pupils with catchlights
+    [[81, -1], [119, 1]].forEach(([cx, k]) => {
+      const X = d => (cx + d * k).toFixed(1);   // d > 0 points away from the nose
+      s += '<path d="M ' + X(14.5) + ' 87.5 C ' + X(11.5) + ' 75.5 ' + X(-7.5) + ' 73.5 ' + X(-14) + ' 85.5 C ' + X(-8.5) + ' 95 ' + X(8.5) + ' 97 ' + X(14.5) + ' 87.5 Z" fill="' + RIM + '"/>';
+      s += '<path d="M ' + X(11.5) + ' 86.8 C ' + X(9) + ' 78.6 ' + X(-7) + ' 77 ' + X(-11.5) + ' 85.2 C ' + X(-7) + ' 92.6 ' + X(7.5) + ' 94.2 ' + X(11.5) + ' 86.8 Z" fill="' + EYE + '"/>';
+      s += '<ellipse cx="' + X(.2) + '" cy="86.6" rx="6.6" ry="6.2" fill="' + EYE_L + '" opacity=".75"/>';
+      s += '<path d="M ' + X(10.6) + ' 85.2 C ' + X(8) + ' 80.4 ' + X(-6) + ' 79 ' + X(-10.6) + ' 84.2" fill="none" stroke="' + EYE_D + '" stroke-width="2.6" opacity=".55"/>';
+      s += '<ellipse cx="' + X(0) + '" cy="86" rx="2.4" ry="6" fill="' + INK + '"/>';
+      s += '<circle cx="' + (cx - 2.6).toFixed(1) + '" cy="82.2" r="1.8" fill="#fff"/>';
+      s += '<circle cx="' + (cx + 2.8).toFixed(1) + '" cy="89.6" r=".8" fill="#fff" opacity=".75"/>';
+      s += '<path d="M ' + X(12) + ' 87 C ' + X(9.6) + ' 78.2 ' + X(-7.6) + ' 76.4 ' + X(-12) + ' 85.2" fill="none"' + st(1.9) + '/>';
+      s += '<path d="M ' + X(10.5) + ' 89.2 C ' + X(6) + ' 93.6 ' + X(-7) + ' 93.2 ' + X(-11) + ' 86.8" fill="none"' + st(.9) + ' opacity=".55"/>';
+      s += strands('M ' + X(-11.8) + ' 86.6 C ' + X(-12.8) + ' 90 ' + X(-13.6) + ' 93.4 ' + X(-13.2) + ' 97.4', 1.5, FUR_D, .7);
+      s += strands('M ' + X(12.4) + ' 87.6 C ' + X(17) + ' 89 ' + X(21) + ' 90.6 ' + X(26) + ' 92.6', 1.9, FUR_D, .85);
     });
-    // tan muzzle bridge, pink-brown nose, white chin
-    s += '<path d="M 82 70 L 81 82 L 91 82 L 90 70 Z" fill="' + FUR_L + '" opacity=".9"/>';
-    s += '<path d="M 81 81 L 91 81 L 86 87 Z" fill="' + NOSE + '"' + st(1.3) + '/>';
-    s += '<path d="M 86 87 v 3 M 86 90 C 83 93 79 93 77 90 M 86 90 C 89 93 93 93 95 90" fill="none"' + st(1.3) + '/>';
-    s += '<path d="M 78 92 C 82 99 90 99 94 92 C 90 95 82 95 78 92 Z" fill="' + CREAM + '"/>';
-    s += '<g stroke="#fffaf0" stroke-width=".9" opacity=".95" fill="none"><path d="M 75 87 C 60 83 46 84 32 88"/><path d="M 75 90 C 60 90 48 93 36 99"/><path d="M 97 87 C 112 83 126 84 140 88"/><path d="M 97 90 C 112 90 124 93 136 99"/></g>';
+    // nose: warm brown bridge, small pink nose with a little shine
+    s += '<path d="M 96 82 C 97.2 90 97.2 97 96.2 102.6 L 103.8 102.6 C 102.8 97 102.8 90 104 82 Z" fill="' + BRIDGE + '" opacity=".85"/>';
+    s += '<path d="M 95.4 102.4 C 97.6 100.4 102.4 100.4 104.6 102.4 C 103.8 104.6 101.6 106.4 100 107.4 C 98.4 106.4 96.2 104.6 95.4 102.4 Z" fill="' + NOSE + '"' + st(1.3) + '/>';
+    s += '<path d="M 97.6 102.3 C 98.6 101.7 100 101.7 100.8 102.1" fill="none" stroke="#fff" stroke-width=".9" opacity=".6" stroke-linecap="round"/>';
+    // puffy whisker pads, little white chin, gentle mouth
+    s += '<ellipse cx="93.6" cy="111.2" rx="7.6" ry="5.4" fill="' + CREAM + '"/><ellipse cx="106.4" cy="111.2" rx="7.6" ry="5.4" fill="' + CREAM + '"/>';
+    s += '<ellipse cx="100" cy="118.6" rx="6" ry="3.8" fill="' + CREAM + '"/>';
+    s += '<g fill="' + FUR_D + '" opacity=".45">' + [[90, 109.5], [93.5, 108.8], [91.5, 112.5], [110, 109.5], [106.5, 108.8], [108.5, 112.5]].map(([x, y]) => '<circle cx="' + x + '" cy="' + y + '" r=".7"/>').join('') + '</g>';
+    s += '<path d="M 100 107.4 V 110.8 M 100 110.8 C 98.8 113 96.2 113.6 94.2 112.2 M 100 110.8 C 101.2 113 103.8 113.6 105.8 112.2" fill="none"' + st(1.25) + '/>';
+    // whiskers: long and white, gently curved
+    s += strands('M 88 110 C 72 106 56 105 38 107 M 88 113 C 72 112 56 114 40 120 M 89 116 C 76 119 64 125 52 132 M 112 110 C 128 106 144 105 162 107 M 112 113 C 128 112 144 114 160 120 M 111 116 C 124 119 136 125 148 132', .95, '#f6f2ea');
+    s += strands('M 88 110 C 72 106 56 105 38 107 M 112 110 C 128 106 144 105 162 107', .5, INK, .45);
+    s += '</g>';
     return s + '</svg>';
   }
   return { svg };
